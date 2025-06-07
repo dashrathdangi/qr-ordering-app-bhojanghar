@@ -19,8 +19,10 @@ export async function GET(request, { params }) {
 
     console.log("🔍 Fetching details for outlet:", slug);
 
-    const result = await query("SELECT id, name, slug, address, created_at, owner_id, description FROM outlets WHERE slug = $1", [slug]);
-
+    const result = await query(
+  "SELECT id, name, slug, address, created_at, owner_id, description, logo_url FROM outlets WHERE slug = $1",
+  [slug]
+ );
     if (result.rows.length === 0) {
       console.warn(`🚨 Outlet not found: ${slug}`);
       return new Response(
