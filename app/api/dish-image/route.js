@@ -1,5 +1,5 @@
 // /app/api/dish-images/route.js
-import { query } from '../../../lib/server/db';
+import { query } from '@/lib/server/db';
 
 export async function POST(req) {
   try {

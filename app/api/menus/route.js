@@ -1,4 +1,5 @@
-import { query } from '../../../lib/server/db';
+import { query } from '@/lib/server/db'
+;
 
 // ===============================
 // ✅ POST: Add new menu to an outlet
