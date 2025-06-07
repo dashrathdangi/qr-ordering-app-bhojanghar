@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Whopper",
+    "price": 150,
+    "image": "/outlets/burger-king/whopper.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Fries",
+    "price": 80,
+    "image": "/outlets/burger-king/fries.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Pepsi",
+    "price": 50,
+    "image": "/outlets/burger-king/pepsi.jpg"
+  }
+]
