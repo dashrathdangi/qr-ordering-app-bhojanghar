@@ -1,4 +1,5 @@
-import { query } from '../../../lib/server/db';
+import { query } from '@/lib/server/db'
+;
 import { hash } from "bcrypt";
 import { getAdminIdFromRequest } from '../../../lib/auth';
 import fs from 'fs';

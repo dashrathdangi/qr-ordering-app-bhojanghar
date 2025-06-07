@@ -1,4 +1,5 @@
-import { query } from '../../../lib/server/db';
+import { query } from '@/lib/server/db'
+;
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 

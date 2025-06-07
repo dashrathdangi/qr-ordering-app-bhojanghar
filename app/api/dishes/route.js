@@ -1,4 +1,4 @@
-import { query } from '../../../lib/server/db';
+import { query } from '@/lib/server/db';
 
 // POST: Add a new dish
 export async function POST(req) {
