@@ -6,12 +6,11 @@ export async function GET(request, { params }) {
 
   // SQL query to get outlet info by slug
   const sql = `
-    SELECT name, slug, description, logo, contact_phone
-    FROM outlets
-    WHERE slug = $1
-    LIMIT 1
-  `;
-
+  SELECT name, slug, description, logo_url, contact_phone
+  FROM outlets
+  WHERE slug = $1
+  LIMIT 1
+`;
   try {
     const result = await query(sql, [slug]);
 
