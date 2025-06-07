@@ -60,12 +60,12 @@ try {
 
     return NextResponse.json(menusWithCategories);
   } catch (err) {
-    console.error('❌ GET /api/outlets/[slug]/menu error:', err);
-    if (err.message === 'Outlet not found') {
-      return NextResponse.json({ error: 'Outlet not found' }, { status: 404 });
-    }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  console.error('❌ GET /api/outlets/[slug]/menu error:', err.message, err.stack);
+  if (err.message === 'Outlet not found') {
+    return NextResponse.json({ error: 'Outlet not found' }, { status: 404 });
   }
+  return NextResponse.json({ error: 'Internal server error', detail: err.message }, { status: 500 });
+}
 }
 
 export async function POST(req, context) {
