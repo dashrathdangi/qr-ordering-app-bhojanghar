@@ -9,7 +9,7 @@ async function getOutletId(slug) {
 }
 
 export async function GET(request, { params }) {
-  const { slug } = await params;
+  const { slug } = params;
 
 try {
   const outletId = await getOutletId(slug);
@@ -104,7 +104,7 @@ export async function POST(req, context) {
         await query('ROLLBACK');
         return NextResponse.json({ error: 'Menu title is required' }, { status: 400 });
       }
-
+     console.log('Inserting menu:', menu.title); // 👈 ADD HERE
       const menuInsertRes = await query(
         'INSERT INTO menus (outlet_id, title) VALUES ($1, $2) RETURNING id',
         [outletId, menu.title]
@@ -117,7 +117,7 @@ export async function POST(req, context) {
             await query('ROLLBACK');
             return NextResponse.json({ error: 'Category name is required' }, { status: 400 });
           }
-
+          console.log('Inserting category:', category.name); // 👈 ADD HERE
           const categoryInsertRes = await query(
             'INSERT INTO categories (menu_id, name) VALUES ($1, $2) RETURNING id',
             [menuId, category.name]
@@ -130,7 +130,7 @@ export async function POST(req, context) {
                 await query('ROLLBACK');
                 return NextResponse.json({ error: 'Dish name and price are required' }, { status: 400 });
               }
-
+               console.log('Inserting dish:', dish.name, dish.price); // 👈 ADD HERE
               await query(
                 'INSERT INTO dishes (menu_id, category_id, name, price, image_url, prep_time) VALUES ($1, $2, $3, $4, $5, $6)',
                 [menuId, categoryId, dish.name, dish.price, dish.image_url || null, dish.prep_time || null]
