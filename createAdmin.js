@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Pool } from 'pg'; // ✅ Fix: make sure this line is included
+import { Pool } from 'pg';
 
 const pool = new Pool({
   user: 'postgres.pxyiruxducjidsdcwhkm',
@@ -12,19 +12,20 @@ const pool = new Pool({
 const username = 'admin';
 const password = 'Dashrath#69';
 
-const hashPassword = async () => {
+const createAdmin = async () => {
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const query = 'INSERT INTO admins (username, password) VALUES ($1, $2)';
-    await pool.query(query, [username, hashedPassword]);
-    console.log('✅ Admin user created successfully!');
+    const query = 'INSERT INTO admins (username, password) VALUES ($1, $2) RETURNING *';
+    const result = await pool.query(query, [username, hashedPassword]);
+
+    console.log('✅ Admin user created:', result.rows[0]);
   } catch (err) {
-    console.error('❌ Error hashing password:', err);
+    console.error('❌ Error creating admin user:', err);
   } finally {
-    pool.end();
+    await pool.end();
   }
 };
 
-hashPassword();
+createAdmin();
