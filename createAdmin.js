@@ -12,20 +12,23 @@ const pool = new Pool({
 const username = 'admin';
 const password = 'Dashrath#69';
 
-const createAdmin = async () => {
+async function createAdmin() {
   try {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const query = 'INSERT INTO admins (username, password) VALUES ($1, $2) RETURNING *';
+    const query = `
+      INSERT INTO public.admins (username, password)
+      VALUES ($1, $2)
+      RETURNING id, username
+    `;
+
     const result = await pool.query(query, [username, hashedPassword]);
-
-    console.log('✅ Admin user created:', result.rows[0]);
+    console.log('✅ Inserted:', result.rows[0]);
   } catch (err) {
-    console.error('❌ Error creating admin user:', err);
+    console.error('❌ Error:', err);
   } finally {
     await pool.end();
   }
-};
+}
 
 createAdmin();
