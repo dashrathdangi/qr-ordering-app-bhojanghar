@@ -2,11 +2,11 @@ import bcrypt from 'bcrypt';
 import { Pool } from 'pg'; // ✅ Fix: make sure this line is included
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'qr_ordering_system',
+  user: 'postgres.pxyiruxducjidsdcwhkm',
+  host: 'aws-0-ap-south-1.pooler.supabase.com',
+  database: 'postgres',
   password: 'Dashrath#69',
-  port: 5432,
+  port: 6543,
 });
 
 const username = 'admin';
