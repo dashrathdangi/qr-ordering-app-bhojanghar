@@ -117,10 +117,10 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-    const PORT = 3001;
-    server.listen(PORT, () => {
-      console.log(`🚀 Custom server running at http://localhost:${PORT}`);
-    });
+    const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`🚀 Custom server running on port ${PORT}`);
+});
   }).catch((err) => {
     console.error("❌ Error during Next.js app preparation:", err);
     process.exit(1);
