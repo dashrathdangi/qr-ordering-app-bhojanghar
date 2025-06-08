@@ -433,7 +433,7 @@ console.log("Rendering Admin page, processOrder and updateStatus refs:", process
 
       {/* WebSocket Client */}
       <SocketClient 
-  onNewOrder={fetchOrders} 
+  onNewOrder={processOrder} 
   onOrderStatusUpdate={fetchOrders}
 />
     </main>
