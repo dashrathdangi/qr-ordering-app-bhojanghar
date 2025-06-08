@@ -22,10 +22,11 @@ export async function POST(req) {
         }
       );
     }
+    const admin = result.rows[0];
+
    if (!admin.password) {
   throw new Error('Admin password is missing in DB');
-}
-    const admin = result.rows[0];
+}  
     const passwordMatch = await bcrypt.compare(password, admin.password);
 
     if (!passwordMatch) {
