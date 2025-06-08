@@ -154,6 +154,7 @@ console.log('Menus state being set:', (data.menus || data));
         body: JSON.stringify(menus),
       });
       const data = await res.json();
+     console.log('Save response:', data);
       if (!res.ok) throw new Error(data.error || 'Failed to save menus');
       setSuccessMsg('Menus saved successfully!');
     } catch (err) {
