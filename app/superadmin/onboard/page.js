@@ -19,11 +19,23 @@ export default function SuperadminOnboard() {
   const [listMessage, setListMessage] = useState("");
   const [deletingSlug, setDeletingSlug] = useState("");
   const [subscriptions, setSubscriptions] = useState({});
+  const [admins, setAdmins] = useState([]);
 
 useEffect(() => {
   fetchOutlets();
+  fetchAdmins();
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
+
+ async function fetchAdmins() {
+  try {
+    const res = await fetch("/api/admins");
+    const data = await res.json();
+    setAdmins(data); // 👈 Store the admin list
+  } catch (err) {
+    console.error("❌ Failed to fetch admins:", err);
+  }
+}
 
   function generateSlug(text) {
     return text
@@ -202,15 +214,20 @@ async function handleRenew(slug) {
 
         <div>
           <label className="block mb-1 font-semibold">Owner ID *</label>
-          <input
-            type="text"
-            name="ownerId"
-            value={form.ownerId}
-            onChange={handleChange}
-            placeholder="admin UUID or ID"
-            className="w-full border px-3 py-2 rounded"
-            required
-          />
+          <select
+  name="ownerId"
+  value={form.ownerId}
+  onChange={handleChange}
+  className="w-full border px-3 py-2 rounded"
+  required
+>
+  <option value="">-- Select Owner Admin --</option>
+  {admins.map((admin) => (
+    <option key={admin.id} value={admin.id}>
+      {admin.username}
+    </option>
+  ))}
+</select>
         </div>
 
         <button
