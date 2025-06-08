@@ -22,7 +22,9 @@ export async function POST(req) {
         }
       );
     }
-
+   if (!admin.password) {
+  throw new Error('Admin password is missing in DB');
+}
     const admin = result.rows[0];
     const passwordMatch = await bcrypt.compare(password, admin.password);
 
@@ -75,7 +77,7 @@ export async function POST(req) {
     console.log('✅ Token issued and cookie set for user:', username);
     return response;
   } catch (err) {
-    console.error('❌ Login error:', err);
+    console.error('❌ Login error:', err.message, err.stack);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       {
