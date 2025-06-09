@@ -123,9 +123,9 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-    const PORT = process.env.PORT || 8081;
-server.listen(PORT, () => {
-  console.log(`🚀 Custom server running on port ${PORT}`);
+    const port = process.env.PORT || 3001;
+server.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
 });
   }).catch((err) => {
     console.error("❌ Error during Next.js app preparation:", err);
