@@ -17,7 +17,9 @@ app.prepare().then(() => {
   const expressApp = express();
   const server = http.createServer(expressApp);
 
-  const allowedOrigin = dev ? "http://localhost:3001" : "https://your-production-url.com";
+  const allowedOrigin = dev
+  ? "http://localhost:3001"
+  : "http://qr-ordering-env.eba-yjydr8ih.ap-south-1.elasticbeanstalk.com";
 
   const io = new Server(server, {
     path: "/api/socket",
@@ -117,7 +119,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-    const PORT = process.env.PORT || 3001;
+    const PORT = process.env.PORT || 8081;
 server.listen(PORT, () => {
   console.log(`🚀 Custom server running on port ${PORT}`);
 });
