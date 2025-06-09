@@ -124,9 +124,16 @@ app.prepare().then(() => {
   });
 
     const port = process.env.PORT || 8080;
-server.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
+
+console.log("🟢 Starting server...");
+
+try {
+  server.listen(port, () => {
+    console.log(`🟢 Server running on port ${port}`);
+  });
+} catch (err) {
+  console.error("❌ Error starting server:", err);
+}
   }).catch((err) => {
     console.error("❌ Error during Next.js app preparation:", err);
     process.exit(1);
