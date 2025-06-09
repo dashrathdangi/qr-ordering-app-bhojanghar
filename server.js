@@ -114,6 +114,10 @@ app.prepare().then(() => {
     }
   });
 
+ expressApp.get("/", (req, res) => {
+  res.send("App is running");
+ });
+
   // ✅ Let Next.js handle all remaining routes (including /outlet/[slug], etc.)
   expressApp.use((req, res) => {
     return handle(req, res);
