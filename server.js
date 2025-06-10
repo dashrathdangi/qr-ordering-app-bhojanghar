@@ -19,7 +19,7 @@ app.prepare().then(() => {
 
   const allowedOrigin = dev
   ? "http://localhost:3001"
-  : "http://qr-ordering-env.eba-yjydr8ih.ap-south-1.elasticbeanstalk.com";
+    : "https://qr-ordering-app-bhojan-ghar-prod.eba-hdvyn5st.ap-south-1.elasticbeanstalk.com";
 
   const io = new Server(server, {
     path: "/api/socket",
