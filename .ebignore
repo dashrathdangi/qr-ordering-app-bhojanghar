@@ -3,3 +3,4 @@ next.config.mjs
 *.log
 *.zip
 *.7z
+.env
