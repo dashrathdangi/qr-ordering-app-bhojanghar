@@ -16,17 +16,19 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
     // Load notification sound
     audioRef.current = new Audio('/notification.wav');
 
-    // Handler for 'newOrder' event
-    const handleNewOrder = (orders) => {
-      console.log('📦 Received new order:', orders);
-      if (audioRef.current) {
-        audioRef.current.play().catch(() => {});
-      }
-      if (onNewOrder) {
-        const orderList = Array.isArray(orders) ? orders : [orders];
-        orderList.forEach((order) => onNewOrder(order));
-      }
-    };
+   // Handler for 'newOrder' event
+const handleNewOrder = (orders) => {
+  console.log('📦 Received new order:', orders);
+  if (audioRef.current) {
+    audioRef.current.play().catch((e) => {
+      console.warn("⚠ Failed to play sound", e.message);
+    });
+  }
+  if (onNewOrder) {
+    const orderList = Array.isArray(orders) ? orders : [orders];
+    orderList.forEach((order) => onNewOrder(order));
+  }
+};
 
     // Handler for 'orderStatusUpdate' event
     const handleStatusUpdate = (data) => {
@@ -42,6 +44,8 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       socket = io(socketUrl, {
         transports: ['websocket'],
         withCredentials: true,
+        path: "/api/socket", // ✅ this should match
+      
       });
 
       socket.on('connect', () => {
