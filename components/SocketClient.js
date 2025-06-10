@@ -42,7 +42,6 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       socket = io(socketUrl, {
         transports: ['websocket'],
         withCredentials: true,
-        path: '/api/socket',
       });
 
       socket.on('connect', () => {
