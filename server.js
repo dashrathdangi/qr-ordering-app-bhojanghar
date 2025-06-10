@@ -1,5 +1,5 @@
 // server.js
-
+console.log("✅ server.js started...");
 const { Server } = require("socket.io");
 const readline = require("readline");
 const express = require("express");
