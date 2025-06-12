@@ -9,6 +9,12 @@ const bodyParser = require("body-parser");
 const { query } = require("./lib/db");
 const { v4: uuidv4 } = require("uuid");
 
+// ✅ ADD DEBUG LOGS HERE
+console.log("🟢 Starting server.js");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("DATABASE_URL:", process.env.DATABASE_URL ? "✔️ Set" : "❌ Missing");
+console.log("PORT:", process.env.PORT);
+
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
