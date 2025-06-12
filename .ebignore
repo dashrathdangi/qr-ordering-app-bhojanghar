@@ -4,3 +4,7 @@ next.config.mjs
 *.zip
 *.7z
 .env
+.git
+.vscode
+.elasticbeanstalk
+*.zip
