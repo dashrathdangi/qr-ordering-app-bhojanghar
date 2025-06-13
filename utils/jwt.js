@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
 // Fetch the secret key from environment variables
-const SECRET_KEY = process.env.ADMIN_SECRET || "8426"; // Fallback to a default key if not set in .env.local
+const SECRET_KEY = process.env.SECRET_KEY || "8426"; // Fallback to a default key if not set in .env.local
+if (!SECRET_KEY) throw new Error("❌ SECRET_KEY is missing in environment variables!");
 
 // Log the secret key to ensure it's correctly loaded (remove in production)
 console.log("Using SECRET_KEY:", SECRET_KEY);

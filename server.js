@@ -19,7 +19,7 @@ const dev = process.env.NODE_ENV !== "production";
 
 const allowedOrigin = dev
   ? "http://localhost:3000" // frontend dev
-  : process.env.SOCKET_ORIGIN || "https://bhojanghar-og-app.eba-dgauynta.ap-south-1.elasticbeanstalk.com/";
+  : process.env.SOCKET_ORIGIN || "http://bhojan-ghar-og-app-env.eba-dxqzn62x.ap-south-1.elasticbeanstalk.com";
 
 console.log("✅ Allowed CORS origin:", allowedOrigin);
 
