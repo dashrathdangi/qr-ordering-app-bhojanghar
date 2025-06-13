@@ -122,7 +122,6 @@ app.prepare().then(() => {
       io.emit("newOrder", fakeOrder);
     }
   });
- console.log("👋 '/' route was hit");
  expressApp.get("/", (req, res) => {
   res.send("App is running");
  });
@@ -139,6 +138,7 @@ console.log("🟢 Starting server...");
 try {
   server.listen(port, () => {
     console.log(`🟢 Server running on port ${port}`);
+    console.log(`✅ EB HEALTHCHECK listening on / at port ${port}`); 
   });
 } catch (err) {
   console.error("❌ Error starting server:", err);
