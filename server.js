@@ -17,9 +17,16 @@ console.log("PORT:", process.env.PORT);
 
 const dev = process.env.NODE_ENV !== "production";
 
-const allowedOrigin = dev
-  ? "http://localhost:3000"
-  : process.env.SOCKET_ORIGIN;
+let allowedOrigin;
+
+if (dev) {
+  allowedOrigin = "http://localhost:3000";
+} else if (process.env.SOCKET_ORIGIN) {
+  allowedOrigin = process.env.SOCKET_ORIGIN;
+} else {
+  console.warn("⚠️ Warning: SOCKET_ORIGIN not set. Using fallback origin.");
+  allowedOrigin = "http://localhost:8080"; // fallback or hardcoded EB domain
+}
 
 console.log("✅ Allowed CORS origin:", allowedOrigin);
 
