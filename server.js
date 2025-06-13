@@ -25,7 +25,7 @@ app.prepare().then(() => {
 
   const allowedOrigin = dev
   ? "http://localhost:3000" // frontend dev
-  : process.env.SOCKET_ORIGIN || "https://bhojana-ghar-app-env.eba-qhyb7dtm.ap-south-1.elasticbeanstalk.com";
+  : process.env.SOCKET_ORIGIN || 
   console.log("✅ Allowed CORS origin:", allowedOrigin);
 
   const io = new Server(server, {
