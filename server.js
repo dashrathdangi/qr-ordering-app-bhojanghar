@@ -17,15 +17,15 @@ console.log("PORT:", process.env.PORT);
 
 const dev = process.env.NODE_ENV !== "production";
 
-const allowedOrigin = dev
-  ? "http://localhost:3000"
-  : process.env.SOCKET_ORIGIN || "http://localhost:8080"; // safe fallback
+const allowedOrigin = (origin, callback) => {
+  console.log("🌐 Incoming CORS origin:", origin);
 
-if (!dev && !process.env.SOCKET_ORIGIN) {
-  console.warn("⚠️ Warning: SOCKET_ORIGIN not set. Using fallback origin:", allowedOrigin);
-}
-
-console.log("✅ Allowed CORS origin:", allowedOrigin);
+  if (!origin || origin.includes("localhost") || origin.includes(".elasticbeanstalk.com")) {
+    callback(null, true); // Allow
+  } else {
+    callback(new Error("❌ CORS not allowed from this origin"));
+  }
+};
 
 const app = next({ dev });
 const handle = app.getRequestHandler();
