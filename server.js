@@ -24,8 +24,9 @@ app.prepare().then(() => {
   const server = http.createServer(expressApp);
 
   const allowedOrigin = dev
-  ? "http://localhost:3001"
-    : "https://qr-ordering-app-bhojan-ghar-prod.eba-hdvyn5st.ap-south-1.elasticbeanstalk.com";
+  ? "http://localhost:3000" // frontend dev
+  : process.env.SOCKET_ORIGIN || "https://bhojana-ghar-app-env.eba-qhyb7dtm.ap-south-1.elasticbeanstalk.com";
+  console.log("✅ Allowed CORS origin:", allowedOrigin);
 
   const io = new Server(server, {
     path: "/api/socket",
