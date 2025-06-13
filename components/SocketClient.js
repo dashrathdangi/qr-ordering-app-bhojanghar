@@ -39,7 +39,7 @@ const handleNewOrder = (orders) => {
     // Create socket connection once
     if (!socket) {
       const socketUrl =
-        process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001';
+        process.env.NEXT_PUBLIC_SOCKET_URL;
 
       socket = io(socketUrl, {
         transports: ['websocket'],
