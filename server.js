@@ -119,7 +119,7 @@ app.prepare().then(() => {
       io.emit("newOrder", fakeOrder);
     }
   });
-
+ console.log("👋 '/' route was hit");
  expressApp.get("/", (req, res) => {
   res.send("App is running");
  });
