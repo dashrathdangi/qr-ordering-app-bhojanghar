@@ -16,17 +16,19 @@ console.log("DATABASE_URL:", process.env.DATABASE_URL ? "✔️ Set" : "❌ Miss
 console.log("PORT:", process.env.PORT);
 
 const dev = process.env.NODE_ENV !== "production";
+
+const allowedOrigin = dev
+  ? "http://localhost:3000" // frontend dev
+  : process.env.SOCKET_ORIGIN || "https://bhojanghar-og-app.eba-dgauynta.ap-south-1.elasticbeanstalk.com/";
+
+console.log("✅ Allowed CORS origin:", allowedOrigin);
+
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const expressApp = express();
   const server = http.createServer(expressApp);
-
-  const allowedOrigin = dev
-  ? "http://localhost:3000" // frontend dev
-  : process.env.SOCKET_ORIGIN || 
-  console.log("✅ Allowed CORS origin:", allowedOrigin);
 
   const io = new Server(server, {
     path: "/api/socket",
