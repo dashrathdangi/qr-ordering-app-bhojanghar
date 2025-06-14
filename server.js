@@ -137,15 +137,13 @@ app.prepare().then(() => {
 
     const port = process.env.PORT || 8080;
 
-console.log("🟢 Starting server...");
-
-try {
+// ✅ Prevent multiple starts
+if (require.main === module) {
+  console.log("🟢 Starting server...");
   server.listen(port, () => {
     console.log(`🟢 Server running on port ${port}`);
-    console.log(`✅ EB HEALTHCHECK listening on / at port ${port}`); 
+    console.log(`✅ EB HEALTHCHECK listening on / at port ${port}`);
   });
-} catch (err) {
-  console.error("❌ Error starting server:", err);
 }
   }).catch((err) => {
     console.error("❌ Error during Next.js app preparation:", err);
