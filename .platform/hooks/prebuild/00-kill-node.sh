@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "🛠 Forcing any old node processes on port 8080 to stop..."
-PID=$(lsof -t -i:8080)
+fuser -k 8080/tcp || echo "✅ No process running on port 8080."
 
 if [ -n "$PID" ]; then
   echo "🔪 Killing process ID $PID using port 8080..."
