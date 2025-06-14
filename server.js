@@ -136,12 +136,12 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-   const PORT = process.env.PORT || 3000;
+   const PORT = process.env.PORT || 8080;
 
 if (require.main === module) {
   console.log("🟢 Starting server...");
   server.listen(PORT, () => {
-    console.log(`🟢 Server running at http://localhost:${PORT}`);
+    console.log(`🟢 Server running at http://localhost:${PORT} (expected by Elastic Beanstalk)`);
     console.log(`✅ EB HEALTHCHECK listening on / at port ${PORT}`);
   });
 }
