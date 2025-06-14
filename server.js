@@ -136,7 +136,7 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-    const port = process.env.PORT || 8080;
+    const PORT = 3000;
 
 // ✅ Prevent multiple starts
 if (require.main === module) {
