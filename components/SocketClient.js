@@ -41,13 +41,16 @@ const handleNewOrder = (orders) => {
       const socketUrl =
         process.env.NEXT_PUBLIC_SOCKET_URL;
 
-      socket = io(socketUrl, {
-        transports: ['websocket'],
-        withCredentials: true,
-        path: "/api/socket", // ✅ this should match
-      
-      });
+        console.log("🔗 Connecting to socket:", socketUrl);
 
+      socket = io(socketUrl, {
+  transports: ['websocket'],
+  withCredentials: true,
+  path: "/api/socket",
+  reconnectionAttempts: 5,
+  timeout: 10000,
+  reconnectionDelayMax: 2000,
+});
       socket.on('connect', () => {
         console.log('✅ Connected to socket server:', socket.id);
       });
