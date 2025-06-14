@@ -136,16 +136,16 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-    const PORT = 3000;
+   const PORT = process.env.PORT || 3000;
 
-// ✅ Prevent multiple starts
 if (require.main === module) {
   console.log("🟢 Starting server...");
-  server.listen(port, () => {
-    console.log(`🟢 Server running on port ${port}`);
-    console.log(`✅ EB HEALTHCHECK listening on / at port ${port}`);
+  server.listen(PORT, () => {
+    console.log(`🟢 Server running at http://localhost:${PORT}`);
+    console.log(`✅ EB HEALTHCHECK listening on / at port ${PORT}`);
   });
 }
+
   }).catch((err) => {
     console.error("❌ Error during Next.js app preparation:", err);
     process.exit(1);
