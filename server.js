@@ -1,4 +1,5 @@
 // server.js
+require('dotenv').config();
 console.log("✅ server.js started...");
 const { Server } = require("socket.io");
 const readline = require("readline");
