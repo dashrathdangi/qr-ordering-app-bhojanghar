@@ -20,7 +20,7 @@ const dev = process.env.NODE_ENV !== "production";
 const allowedOrigin = (origin, callback) => {
   console.log("🌐 Incoming CORS origin:", origin);
 
-  if (!origin || origin.includes("localhost") || origin.includes(".elasticbeanstalk.com")) {
+  if (!origin || origin.includes("localhost") || origin.includes("vercel.app") || origin.includes(".elasticbeanstalk.com")) {
     callback(null, true); // Allow
   } else {
     callback(new Error("❌ CORS not allowed from this origin"));
