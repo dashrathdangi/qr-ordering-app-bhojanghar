@@ -38,10 +38,6 @@ const handleNewOrder = (orders) => {
 
     // Create socket connection once
     if (!socket) {
-      const socketUrl =
-        process.env.NEXT_PUBLIC_SOCKET_URL;
-
-        console.log("🔗 Connecting to socket:", socketUrl);
 
   socket = io(socketUrl, {
   transports: ['websocket'],
