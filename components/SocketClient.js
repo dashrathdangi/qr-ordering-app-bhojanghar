@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
-let socket;
+let socket; // keep this only once, globally
 
 export const getSocket = () => socket;
 
@@ -43,7 +43,7 @@ const handleNewOrder = (orders) => {
 
         console.log("🔗 Connecting to socket:", socketUrl);
 
-      socket = io(socketUrl, {
+  socket = io(socketUrl, {
   transports: ['websocket'],
   withCredentials: true,
   path: "/api/socket",
