@@ -39,7 +39,7 @@ const handleNewOrder = (orders) => {
     // Create socket connection once
     if (!socket) {
 
-  socket = io(socketUrl, {
+  socket = io({
   transports: ['websocket'],
   withCredentials: true,
   path: "/api/socket",
