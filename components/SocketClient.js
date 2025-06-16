@@ -39,7 +39,7 @@ const handleNewOrder = (orders) => {
     // Create socket connection once
     if (!socket) {
 
-  socket = io("https://bhojanghar.ap-south-1.elasticbeanstalk.com", {
+  socket = io(socketUrl, {
   transports: ['websocket'],
   withCredentials: true,
   path: "/api/socket",
