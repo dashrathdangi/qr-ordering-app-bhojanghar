@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { query } from '@/lib/server/db';
+import { query } from '@/lib/db';
 import { Pool } from 'pg'; // PostgreSQL client
 
 const pool = new Pool({

@@ -1,4 +1,4 @@
-import { query } from '@/lib/server/db'
+import { query } from '@/lib/db'
 ;
 import { hash } from "bcrypt";
 import { getAdminIdFromRequest } from '../../../lib/auth';

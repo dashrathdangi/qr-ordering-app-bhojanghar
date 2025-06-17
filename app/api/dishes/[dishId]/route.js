@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/server/db';
+import { query } from '@/lib/db';
 
 // PUT: Update a dish
 export async function PUT(req, { params }) {
