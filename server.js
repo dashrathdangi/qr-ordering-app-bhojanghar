@@ -8,7 +8,7 @@ import express from "express";
 import next from "next";
 import http from "http";
 import bodyParser from "body-parser";
-import { query } from "./lib/db.js"; // include `.js` extension
+import { query } from "./lib/db/index.js";
 import { v4 as uuidv4 } from "uuid";
 
 // ✅ ADD DEBUG LOGS HERE
