@@ -1,4 +1,4 @@
-const path = require('path');
+import path from 'path';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,7 +21,7 @@ const nextConfig = {
   webpack(config) {
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      '@': path.resolve(__dirname),
+      '@': path.resolve(process.cwd()),
     };
 
     config.resolve.fallback = {
@@ -33,4 +33,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
