@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '../../../../../lib/server/db';
+import { query } from '@/lib/db';
 
 // Helper to get outlet ID from slug
 async function getOutletId(slug) {

@@ -1,4 +1,4 @@
-import { query } from '../../../../lib/server/db';
+import { query } from '@/lib/db';
 
 const VALID_PLANS = ['free', 'pro'];
 const VALID_STATUSES = ['active', 'expired'];

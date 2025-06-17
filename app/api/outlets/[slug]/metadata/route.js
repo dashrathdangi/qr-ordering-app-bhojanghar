@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '../../../../../lib/server/db';  // Adjust path if needed
+import { query } from '@/lib/db'; // Adjust path if needed
 
 export async function GET(request, { params }) {
   const { slug } = await params;

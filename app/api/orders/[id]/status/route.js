@@ -1,4 +1,4 @@
-import { query } from '../../../../../lib/server/db';
+import { query } from '@/lib/db';
 import { verifyToken } from '../../../../../utils/jwt';
 
 const io = global.io;

@@ -1,4 +1,4 @@
-import { query } from '../../../../lib/server/db';
+import { query } from '@/lib/db';
 
 console.log("✅ Outlet API route loaded!");
 
