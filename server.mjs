@@ -1,14 +1,15 @@
 // server.js
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 console.log("✅ server.js started...");
-const { Server } = require("socket.io");
-const readline = require("readline");
-const express = require("express");
-const next = require("next");
-const http = require("http");
-const bodyParser = require("body-parser");
-const { query } = require("./lib/db");
-const { v4: uuidv4 } = require("uuid");
+import { Server } from "socket.io";
+import readline from "readline";
+import express from "express";
+import next from "next";
+import http from "http";
+import bodyParser from "body-parser";
+import { query } from "./lib/db.js"; // include `.js` extension
+import { v4 as uuidv4 } from "uuid";
 
 // ✅ ADD DEBUG LOGS HERE
 console.log("🟢 Starting server.js");
@@ -138,7 +139,8 @@ app.prepare().then(() => {
 
    const PORT = process.env.PORT || 8080;
 
-if (require.main === module) {
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
   console.log("🟢 Starting server...");
   server.listen(PORT, () => {
     console.log(`🟢 Server running at http://localhost:${PORT} (expected by Elastic Beanstalk)`);
