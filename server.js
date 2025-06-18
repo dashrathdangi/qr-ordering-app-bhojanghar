@@ -142,7 +142,7 @@ app.prepare().then(() => {
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
   console.log("🟢 Starting server...");
-  server.listen(PORT, () => {
+ server.listen(PORT, '0.0.0.0', () => {
     console.log(`🟢 Server running at http://localhost:${PORT} (expected by Elastic Beanstalk)`);
     console.log(`✅ EB HEALTHCHECK listening on / at port ${PORT}`);
   });
