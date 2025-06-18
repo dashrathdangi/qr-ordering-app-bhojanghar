@@ -39,7 +39,8 @@ const handleNewOrder = (orders) => {
     // Create socket connection once
     if (!socket) {
 
-  socket = io(socketUrl, {
+const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL;
+socket = io(socketUrl, {
   transports: ['websocket'],
   withCredentials: true,
   path: "/api/socket",
@@ -47,9 +48,9 @@ const handleNewOrder = (orders) => {
   timeout: 10000,
   reconnectionDelayMax: 2000,
 });
-      socket.on('connect', () => {
-        console.log('✅ Connected to socket server:', socket.id);
-      });
+socket.on('connect', () => {
+  console.log('✅ Connected to socket server:', socket.id);
+});
 
       socket.on('connect_error', (err) => {
         console.error('❌ Socket connection error:', err.message);
