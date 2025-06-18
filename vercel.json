@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "https://www.stonezon.com/:path*",
+      "destination": "https://stonezon.com/:path*",
+      "permanent": true
+    }
+  ]
+}
