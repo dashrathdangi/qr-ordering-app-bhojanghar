@@ -140,7 +140,7 @@ app.prepare().then(() => {
    const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`🟢 Server running at http://localhost:${PORT}`);
+  console.log(`🟢 Server running at http://0.0.0.0:${PORT}`);
 });
 
   }).catch((err) => {
