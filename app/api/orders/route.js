@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { checkSubscriptionValid } from '../../../lib/checkSubscription';
 
 console.log("✅ /api/orders route loaded!");
+console.log("🧪 POST /api/orders hit");
 
 const getCookieValue = (cookieHeader, key) => {
   if (!cookieHeader) return null;
