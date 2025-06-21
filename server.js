@@ -117,7 +117,7 @@ app.prepare().then(() => {
   rl.on("line", (input) => {
     if (input.trim().toLowerCase() === "order") {
       const fakeOrder = {
-        id: Date.now(),
+        id: Math.floor(Math.random() * 1000), // or pick any test number
         customer_name: "John Test",
         table_number: "5",
         is_package: false,
