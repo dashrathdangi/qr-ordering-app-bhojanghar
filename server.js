@@ -1,6 +1,7 @@
 // server.js
 import dotenv from 'dotenv';
 dotenv.config();
+const PORT = process.env.PORT || 8080;
 console.log("✅ server.js started...");
 import { Server } from "socket.io";
 import readline from "readline";
@@ -136,8 +137,6 @@ app.prepare().then(() => {
   expressApp.use((req, res) => {
     return handle(req, res);
   });
-
-   const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🟢 Server running at http://0.0.0.0:${PORT}`);
