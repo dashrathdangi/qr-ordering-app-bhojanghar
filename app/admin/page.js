@@ -298,6 +298,7 @@ export default function AdminDashboard() {
 
     // 3) Replace that one session in the array
     updatedSessions[sessionIndex] = updatedSession;
+    console.log("🧠 All sessions in state now:", updatedSessions.map(s => s.outlet_slug));
     return updatedSessions;
   });
 
@@ -426,7 +427,7 @@ console.log("Rendering Admin page, processOrder and updateStatus refs:", process
       {!loading && filteredOrders.length === 0 && <p>No orders found.</p>}
 
       <div className="space-y-6">
-        {orders.map((session) => (
+        {filteredOrders.map((session) => (
           <OrderCard
             key={session.session_id}
             session={session}
