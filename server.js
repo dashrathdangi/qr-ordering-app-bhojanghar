@@ -105,6 +105,8 @@ app.prepare().then(() => {
       const orderData = insertedOrder.rows[0];
       console.log("✅ Real order inserted:", orderData);
       console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
+      console.log("🧑‍💻 Currently connected admin sockets:");
+adminSockets.forEach(s => console.log("➡️", s.id));
 
       console.log("📢 Emitting to total admins:", adminSockets.size);
  adminSockets.forEach((adminSocket) => {
