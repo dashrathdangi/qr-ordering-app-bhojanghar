@@ -95,9 +95,9 @@ app.prepare().then(() => {
       );
 
       const orderData = insertedOrder.rows[0];
-      console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
+      console.log("📢 Emitting WebSocket neworder for:", orderData.id);
 
-      io.emit("newOrder", {
+      io.emit("neworder", {
         ...orderData,
         cart,
       });
@@ -132,7 +132,7 @@ app.prepare().then(() => {
       };
 
       console.log("📦 Emitting fake order:");
-      io.emit("newOrder", fakeOrder);
+      io.emit("neworder", fakeOrder);
     }
   });
  expressApp.get("/", (req, res) => {
