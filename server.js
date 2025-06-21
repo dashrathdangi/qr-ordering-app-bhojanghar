@@ -96,6 +96,7 @@ app.prepare().then(() => {
       );
 
       const orderData = insertedOrder.rows[0];
+      console.log("✅ Real order inserted:", orderData);
       console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
 
       io.emit("newOrder", {
