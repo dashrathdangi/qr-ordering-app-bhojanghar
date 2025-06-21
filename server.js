@@ -51,6 +51,7 @@ app.prepare().then(() => {
     },
     transports: ["websocket"],
     allowEIO3: true,
+    pingInterval: 25000,
   });
 
   global.io = io;
@@ -95,9 +96,9 @@ app.prepare().then(() => {
       );
 
       const orderData = insertedOrder.rows[0];
-      console.log("📢 Emitting WebSocket neworder for:", orderData.id);
+      console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
 
-      io.emit("neworder", {
+      io.emit("newOrder", {
         ...orderData,
         cart,
       });
@@ -132,7 +133,7 @@ app.prepare().then(() => {
       };
 
       console.log("📦 Emitting fake order:");
-      io.emit("neworder", fakeOrder);
+      io.emit("newOrder", fakeOrder);
     }
   });
  expressApp.get("/", (req, res) => {

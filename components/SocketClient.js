@@ -52,13 +52,13 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       if (onOrderStatusUpdate) onOrderStatusUpdate(data);
     };
 
-    socket.off('neworder', handleNewOrder);
-   socket.on('neworder', handleNewOrder);
+    socket.off('newOrder', handleNewOrder);
+   socket.on('newOrder', handleNewOrder);
     socket.off('orderStatusUpdate', handleStatusUpdate);
     socket.on('orderStatusUpdate', handleStatusUpdate);
 
     return () => {
-      socket?.off('neworder', handleNewOrder);
+      socket?.off('newOrder', handleNewOrder);
       socket?.off('orderStatusUpdate', handleStatusUpdate);
     };
   }, [onNewOrder, onOrderStatusUpdate]);
