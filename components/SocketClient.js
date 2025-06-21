@@ -27,8 +27,11 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       window.socket = socket;
 
       socket.on('connect', () => {
-        console.log('✅ Connected to socket server:', socket.id);
-      });
+  console.log('✅ Connected to socket server:', socket.id);
+
+  // ✅ Let server know this is an admin
+  socket.emit('adminConnected');
+});
 
       socket.on('connect_error', (err) => {
         console.error('❌ Socket connection error:', err.message);

@@ -56,6 +56,7 @@ app.prepare().then(() => {
 
   global.io = io;
 
+  const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
   io.on("connection", (socket) => {
     console.log(`📡 WebSocket connected: ${socket.id}`);
 
@@ -100,10 +101,12 @@ app.prepare().then(() => {
       console.log("✅ Real order inserted:", orderData);
       console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
 
-      io.emit("newOrder", {
-        ...orderData,
-        cart,
-      });
+      adminSockets.forEach((adminSocket) => {
+  adminSocket.emit("newOrder", {
+    ...orderData,
+    cart,
+  });
+});
 
       console.log(`📦 New order emitted for ${slug}:`, orderData);
       res.status(201).json({ message: "Order placed successfully", order: orderData });
