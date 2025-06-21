@@ -439,7 +439,7 @@ console.log("Rendering Admin page, processOrder and updateStatus refs:", process
       {/* WebSocket Client */}
       <SocketClient 
   onNewOrder={processOrder} 
-  onOrderStatusUpdate={({ orderId, newStatus }) => updateStatus(orderId, newStatus)}
+  onOrderStatusUpdate={updateStatus}
 />
     </main>
   );

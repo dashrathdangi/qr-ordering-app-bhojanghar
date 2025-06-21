@@ -52,12 +52,15 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       console.log('📦 Received new order:', data);
       onNewOrderRef.current?.(data);
     };
-
-    const handleStatusUpdate = (data) => {
-      console.log('🔄 Order status updated:', data);
-      onOrderStatusUpdateRef.current?.(data);
-    };
-
+const handleStatusUpdate = (data) => {
+  console.log('🔄 Order status updated:', JSON.stringify(data));
+  const { orderId, newStatus } = data || {};
+  if (orderId && newStatus) {
+    onOrderStatusUpdateRef.current?.(orderId, newStatus); // ✅ correct signature
+  } else {
+    console.warn('⚠️ Incomplete data for orderStatusUpdate:', data);
+  }
+};
     // ✅ Attach listeners only once
     socket.on('newOrder', handleNewOrder);
     socket.on('orderStatusUpdate', handleStatusUpdate);
