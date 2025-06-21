@@ -106,7 +106,9 @@ app.prepare().then(() => {
       console.log("✅ Real order inserted:", orderData);
       console.log("📢 Emitting WebSocket newOrder for:", orderData.id);
 
-      adminSockets.forEach((adminSocket) => {
+      console.log("📢 Emitting to total admins:", adminSockets.size);
+ adminSockets.forEach((adminSocket) => {
+  console.log("➡️ Emitting to admin:", adminSocket.id);
   adminSocket.emit("newOrder", {
     ...orderData,
     cart,
