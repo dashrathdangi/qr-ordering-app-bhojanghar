@@ -209,6 +209,8 @@ export default function AdminDashboard() {
     created_at: newOrder.created_at || new Date().toISOString(),
     order_number: newOrder.order_number ?? 'N/A',
   };
+ console.log("📦 Incoming order outlet_slug:", parsedOrderObj.outlet_slug);
+ console.log("📦 Current selectedOutlet:", selectedOutlet);
 
   // Now update `orders` state:
   setOrders((prevSessions) => {
@@ -302,7 +304,7 @@ export default function AdminDashboard() {
   // Finally, allow sound for each NEW order
   knownOrderIds.current.add(parsedOrderObj.id);
   playSound();
-}, [playSound]);  // Removed orders here
+}, [playSound, selectedOutlet]);  // Added selectedOutlet to dependencies
 
 console.log("Rendering Admin page, processOrder and updateStatus refs:", processOrder, updateStatus);
   // Handle events from WebSocket client
@@ -362,6 +364,8 @@ console.log("Rendering Admin page, processOrder and updateStatus refs:", process
         sessionDate.getFullYear() === today.getFullYear()
       );
     });
+   console.log("🧾 Full Orders:", orders);
+  console.log("🔍 Filtered Orders:", filteredOrders);
 
   return (
     <main className="max-w-7xl mx-auto p-4">
@@ -422,7 +426,7 @@ console.log("Rendering Admin page, processOrder and updateStatus refs:", process
       {!loading && filteredOrders.length === 0 && <p>No orders found.</p>}
 
       <div className="space-y-6">
-        {filteredOrders.map((session) => (
+        {orders.map((session) => (
           <OrderCard
             key={session.session_id}
             session={session}
