@@ -59,12 +59,15 @@ app.prepare().then(() => {
   const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
   io.on("connection", (socket) => {
     console.log(`📡 WebSocket connected: ${socket.id}`);
-      socket.on("adminConnected", () => {
-    console.log(`✅ Admin identified: ${socket.id}`);
+        socket.on("adminConnected", () => {
     adminSockets.add(socket);
-    console.log("🧠 Total admin sockets:", adminSockets.size);
-  });
+    console.log("✅ Admin registered:", socket.id);
 
+    socket.on("disconnect", () => {
+      adminSockets.delete(socket);
+      console.log("🗑️ Admin removed:", socket.id);
+    });
+  });
     const heartbeat = setInterval(() => {
       socket.emit("ping", { status: "alive" });
     }, 30000);
