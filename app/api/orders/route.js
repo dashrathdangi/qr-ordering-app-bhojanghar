@@ -5,7 +5,6 @@ import crypto from "crypto";
 import { checkSubscriptionValid } from '../../../lib/checkSubscription';
 
 console.log("✅ /api/orders route loaded!");
-console.log("🧪 POST /api/orders hit");
 
 const getCookieValue = (cookieHeader, key) => {
   if (!cookieHeader) return null;
@@ -350,7 +349,7 @@ VALUES
     if (global.io) {
       try {
         const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
-        global.io.emit("newOrder", orderToEmit);
+        global.io.emit("newOrder", updatedGroupedOrders);
       } catch (err) {
         console.error("❌ GET Orders Error:", err.stack || err.message || err);
 
