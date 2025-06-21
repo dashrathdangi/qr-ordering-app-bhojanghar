@@ -71,6 +71,7 @@ app.prepare().then(() => {
 
   // 🛒 Handle order POST requests
   expressApp.post("/outlet/:slug", bodyParser.json(), async (req, res) => {
+    console.log("🛎️ Real order POST hit for:", req.params.slug);
     try {
       const { slug } = req.params;
       const { customer_name, table_number, is_package, cart } = req.body;
