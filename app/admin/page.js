@@ -440,10 +440,7 @@ useEffect(() => {
       </div>
 
       {/* WebSocket Client */}
-      <SocketClient 
-  onNewOrder={processOrder} 
-  onOrderStatusUpdate={updateStatus}
-/>
+      <SocketClient onSocketEvent={handleSocketEvent} />
     </main>
   );
 }
