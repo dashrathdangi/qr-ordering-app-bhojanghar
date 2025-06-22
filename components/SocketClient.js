@@ -62,14 +62,29 @@ const handleStatusUpdate = (data) => {
   }
 };
     // ✅ Attach listeners only once
-    socket.on('newOrder', handleNewOrder);
-    socket.on('orderStatusUpdate', handleStatusUpdate);
+    const newOrderListener = (data) => {
+  console.log('📦 Received new order:', data); // ✅ socket received
+  if (onNewOrder) {
+    onNewOrder(data); // ✅ triggers AdminDashboard's processOrder
+  }
+};
 
-    return () => {
-      socket?.off('newOrder', handleNewOrder);
-      socket?.off('orderStatusUpdate', handleStatusUpdate);
-    };
-  }, []);
+const statusUpdateListener = (data) => {
+  console.log('🔄 Received order status update:', data); // optional
+  if (onOrderStatusUpdate) {
+    onOrderStatusUpdate(data);
+  }
+};
+
+socket.on('newOrder', newOrderListener);
+socket.on('orderStatusUpdate', statusUpdateListener);
+
+return () => {
+  socket.off('newOrder', newOrderListener);
+  socket.off('orderStatusUpdate', statusUpdateListener);
+};
+
+  }, [onNewOrder, onOrderStatusUpdate]);
 
   return null;
 }

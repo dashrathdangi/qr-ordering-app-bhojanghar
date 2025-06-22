@@ -29,7 +29,7 @@ export default function AdminDashboard() {
       audioRef.current = new Audio('/notification.wav');
       audioRef.current.volume = 0.5;
     }
-  }, []);
+  }, []); 
 
   // Function to play notification sound if allowed
   const playSound = useCallback(() => {
@@ -307,28 +307,46 @@ export default function AdminDashboard() {
   playSound();
 }, [playSound, selectedOutlet]);  // Added selectedOutlet to dependencies
 
+// ✅ Trigger test order after mount to check real-time update works
+useEffect(() => {
+  const fake = {
+    id: 'test123',
+    session_id: 'test_sess_id',
+    outlet_slug: 'burger-king',
+    cart: [{ name: 'Test Dish', price: 100, quantity: 1 }],
+    customer_name: 'Test',
+    table_number: '1',
+    total_amount: 100,
+    created_at: new Date().toISOString(),
+    status: 'pending',
+  };
+
+  setTimeout(() => {
+    console.log('🔬 Triggering test order...');
+    processOrder(fake);
+  }, 5000);
+}, [processOrder]); // ✅ add processOrder here
+
 console.log("Rendering Admin page, processOrder and updateStatus refs:", processOrder, updateStatus);
+console.log('🔁 Current orders count:', orders.length);
+
   // Handle events from WebSocket client
-  const handleSocketEvent = useCallback(
-    (eventName, payload) => {
-      if (eventName === 'newOrder') {
-        processOrder(payload);
-      } else if (eventName === 'orderStatusUpdate') {
-        const { orderId, newStatus } = payload;
-        updateStatus(orderId, newStatus);
-      }
-    },
-    [processOrder, updateStatus]
-  );
+ const handleSocketEvent = useCallback(
+  (eventName, payload) => {
+    if (eventName === 'newOrder') {
+      processOrder(payload);  // ✅ used here
+    } else if (eventName === 'orderStatusUpdate') {
+      const { orderId, newStatus } = payload;
+      updateStatus(orderId, newStatus);
+    }
+  },
+  [processOrder, updateStatus] // ✅ both are used inside
+);
 
   // Load outlets and orders when component mounts or filters change
   useEffect(() => {
     fetchOutlets();
   }, [fetchOutlets]);
-
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
 
   // Save selected outlet in cookie when changed
   useEffect(() => {
