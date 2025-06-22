@@ -57,15 +57,15 @@ app.prepare().then(() => {
   global.io = io;
 
   const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
-  io.on("connection", (socket) => {
+ io.on("connection", (socket) => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
 
-  // ✅ Handle debug messages from frontend
+  // ✅ Register test-debug
   socket.on("test-debug", (data) => {
     console.log("🐞 test-debug received from socket:", socket.id, data);
   });
 
-  // ✅ When admin connects
+  // ✅ Register adminConnected
   socket.on("adminConnected", () => {
     adminSockets.add(socket);
     console.log("✅ Admin registered:", socket.id);
@@ -73,7 +73,7 @@ app.prepare().then(() => {
     adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
   });
 
-  // ✅ Handle disconnect (cleanup)
+  // ✅ Handle disconnect
   socket.on("disconnect", (reason) => {
     if (adminSockets.has(socket)) {
       adminSockets.delete(socket);
@@ -82,12 +82,12 @@ app.prepare().then(() => {
     console.log(`❌ WebSocket disconnected: ${reason}`);
   });
 
-  // ✅ Heartbeat ping
+  // ✅ Ping every 30s
   const heartbeat = setInterval(() => {
     socket.emit("ping", { status: "alive" });
   }, 30000);
 
-  socket.on("disconnect", () => clearInterval(heartbeat)); // No reason needed here
+  socket.on("disconnect", () => clearInterval(heartbeat));
 });
 
   // 🛒 Handle order POST requests
