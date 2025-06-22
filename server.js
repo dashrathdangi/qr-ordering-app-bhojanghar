@@ -59,6 +59,10 @@ app.prepare().then(() => {
   const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
   io.on("connection", (socket) => {
     console.log(`📡 WebSocket connected: ${socket.id}`);
+
+    socket.on("test-debug", (data) => {
+    console.log("🐞 test-debug received from socket:", socket.id, data);
+  });
         socket.on("adminConnected", () => {
     adminSockets.add(socket);
     console.log("✅ Admin registered:", socket.id);
@@ -71,9 +75,7 @@ app.prepare().then(() => {
       console.log("🗑️ Admin removed:", socket.id);
     });
   });
-   socket.on("test-debug", (data) => {
-    console.log("🐞 test-debug received from socket:", socket.id, data);
-  });
+   
     const heartbeat = setInterval(() => {
       socket.emit("ping", { status: "alive" });
     }, 30000);
