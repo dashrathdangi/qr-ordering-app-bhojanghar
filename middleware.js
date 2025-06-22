@@ -5,27 +5,23 @@ const SECRET_KEY = new TextEncoder().encode(
   process.env.SECRET_KEY || 'fallback-secret'
 );
 
+// ✅ Match only page routes
 export const config = {
-  matcher: ['/admin/:path*'], // ✅ only match protected admin pages
+  matcher: [
+    '/admin((?!.*\\.(js|json|png|jpg|jpeg|gif|ico|svg|webp|wav|php)).*)',
+  ],
 };
 
 export async function middleware(req) {
-  const { pathname } = req.nextUrl;
+  const pathname = req.nextUrl.pathname;
 
-  // ✅ Skip for static files and login
-  if (
-    pathname === '/admin/login' ||
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon.ico') ||
-    pathname.startsWith('/images') ||
-    pathname.startsWith('/notification.wav')
-  ) {
+  if (pathname === '/admin/login') {
     return NextResponse.next();
   }
 
-  // ✅ Skip auth check if it's a WebSocket upgrade
+  // ✅ This will catch WebSocket upgrades and bypass auth
   if (req.headers.get('upgrade')?.toLowerCase() === 'websocket') {
-    console.log('🟢 WebSocket upgrade request — bypassing middleware');
+    console.log('🟢 WebSocket upgrade — skipping auth');
     return NextResponse.next();
   }
 
@@ -33,16 +29,16 @@ export async function middleware(req) {
 
   const tokenCookie = req.cookies.get('token');
   if (!tokenCookie) {
-    console.warn('🔒 No token cookie — redirecting to /admin/login');
+    console.warn('🔒 No token cookie — redirecting to login');
     return NextResponse.redirect(new URL('/admin/login', req.url));
   }
 
   try {
     const { payload } = await jwtVerify(tokenCookie.value, SECRET_KEY);
-    console.log('✅ Token OK for:', payload?.username || payload?.sub || 'unknown');
+    console.log('✅ Token OK for:', payload?.username || 'unknown');
     return NextResponse.next();
   } catch (err) {
-    console.error('❌ Invalid token:', err.message);
+    console.error('❌ Token invalid:', err.message);
     return NextResponse.redirect(new URL('/admin/login', req.url));
   }
 }
