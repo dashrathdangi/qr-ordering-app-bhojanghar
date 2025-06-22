@@ -64,15 +64,15 @@ app.prepare().then(() => {
  io.on("connection", (socket) => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
 
-  socket.onAny((event, ...args) => {
+  socket.on("test-debug", (data) => {
+  console.log("🐞 test-debug received from socket:", socket.id, data);
+});
+
+socket.onAny((event, ...args) => {
   console.log(`📥 socket.onAny => Received event: "${event}"`, args);
 });
- console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
-  // ✅ Register test-debug
-  socket.on("test-debug", (data) => {
-    console.log("🐞 test-debug received from socket:", socket.id, data);
-  });
+ console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
   socket.onAny((event, ...args) => {
   console.log(`📥 onAny event: ${event}`, JSON.stringify(args));
