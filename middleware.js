@@ -8,7 +8,8 @@ const SECRET_KEY = new TextEncoder().encode(
 // ✅ Match only page routes
 export const config = {
   matcher: [
-    '/admin((?!.*\\.(js|json|png|jpg|jpeg|gif|ico|svg|webp|wav|php)).*)',
+    '/admin',
+    '/admin/(.*)',
   ],
 };
 
