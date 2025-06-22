@@ -309,6 +309,8 @@ export default function AdminDashboard() {
 
 // ✅ Trigger test order after mount to check real-time update works
 useEffect(() => {
+  if (orders.length === 0) return; // wait until real orders are loaded
+
   const fake = {
     id: 'test123',
     session_id: 'test_sess_id',
@@ -321,11 +323,13 @@ useEffect(() => {
     status: 'pending',
   };
 
-  setTimeout(() => {
+  const timer = setTimeout(() => {
     console.log('🔬 Triggering test order...');
     processOrder(fake);
   }, 5000);
-}, [processOrder]); // ✅ add processOrder here
+
+  return () => clearTimeout(timer);
+}, [processOrder, orders.length]); // depend on orders.length too
 
 console.log("Rendering Admin page, processOrder and updateStatus refs:", processOrder, updateStatus);
 console.log('🔁 Current orders count:', orders.length);
@@ -347,6 +351,11 @@ console.log('🔁 Current orders count:', orders.length);
   useEffect(() => {
     fetchOutlets();
   }, [fetchOutlets]);
+
+  // Load orders on mount
+useEffect(() => {
+  fetchOrders();
+}, [fetchOrders]);
 
   // Save selected outlet in cookie when changed
   useEffect(() => {
