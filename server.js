@@ -67,6 +67,7 @@ app.prepare().then(() => {
   socket.onAny((event, ...args) => {
   console.log(`📥 socket.onAny => Received event: "${event}"`, args);
 });
+ console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
   // ✅ Register test-debug
   socket.on("test-debug", (data) => {

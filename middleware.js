@@ -6,7 +6,7 @@ const SECRET_KEY = new TextEncoder().encode(
 );
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/socket'], // ✅ include socket
 };
 
 export async function middleware(req) {
@@ -18,7 +18,7 @@ export async function middleware(req) {
     pathname.startsWith('/favicon.ico') ||
     pathname.startsWith('/notification.wav') ||
     pathname.startsWith('/images') ||
-    pathname.startsWith('/api/socket')
+    pathname.startsWith('/api/socket') // ✅ explicitly skip token check for sockets
   ) {
     return NextResponse.next();
   }
