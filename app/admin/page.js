@@ -307,30 +307,6 @@ export default function AdminDashboard() {
   playSound();
 }, [playSound, selectedOutlet]);  // Added selectedOutlet to dependencies
 
-// ✅ Trigger test order after mount to check real-time update works
-useEffect(() => {
-  if (orders.length === 0) return; // wait until real orders are loaded
-
-  const fake = {
-    id: 'test123',
-    session_id: 'test_sess_id',
-    outlet_slug: 'burger-king',
-    cart: [{ name: 'Test Dish', price: 100, quantity: 1 }],
-    customer_name: 'Test',
-    table_number: '1',
-    total_amount: 100,
-    created_at: new Date().toISOString(),
-    status: 'pending',
-  };
-
-  const timer = setTimeout(() => {
-    console.log('🔬 Triggering test order...');
-    processOrder(fake);
-  }, 5000);
-
-  return () => clearTimeout(timer);
-}, [processOrder, orders.length]); // depend on orders.length too
-
 console.log("Rendering Admin page, processOrder and updateStatus refs:", processOrder, updateStatus);
 console.log('🔁 Current orders count:', orders.length);
 
