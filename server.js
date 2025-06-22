@@ -58,38 +58,37 @@ app.prepare().then(() => {
 
   const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
   io.on("connection", (socket) => {
-    console.log(`📡 WebSocket connected: ${socket.id}`);
+  console.log(`📡 WebSocket connected: ${socket.id}`);
 
-    // Always listen for test-debug and disconnect events
-socket.on("test-debug", (data) => {
-  console.log("🐞 test-debug received from socket:", socket.id, data);
-});
-
-socket.on("disconnect", () => {
-  if (adminSockets.has(socket)) {
-    adminSockets.delete(socket);
-    console.log("🗑️ Admin removed:", socket.id);
-  }
-  console.log(`❌ WebSocket disconnected: ${socket.id}`);
-});
-
-// Only handle admin registration
-socket.on("adminConnected", () => {
-  adminSockets.add(socket);
-  console.log("✅ Admin registered:", socket.id);
-  console.log("🧮 Total admin sockets stored:", adminSockets.size);
-  adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
-});
-   
-    const heartbeat = setInterval(() => {
-      socket.emit("ping", { status: "alive" });
-    }, 30000);
-
-    socket.on("disconnect", (reason) => {
-      clearInterval(heartbeat);
-      console.log(`❌ WebSocket disconnected: ${reason}`);
-    });
+  // ✅ Handle debug messages from frontend
+  socket.on("test-debug", (data) => {
+    console.log("🐞 test-debug received from socket:", socket.id, data);
   });
+
+  // ✅ When admin connects
+  socket.on("adminConnected", () => {
+    adminSockets.add(socket);
+    console.log("✅ Admin registered:", socket.id);
+    console.log("🧮 Total admin sockets stored:", adminSockets.size);
+    adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
+  });
+
+  // ✅ Handle disconnect (cleanup)
+  socket.on("disconnect", (reason) => {
+    if (adminSockets.has(socket)) {
+      adminSockets.delete(socket);
+      console.log("🗑️ Admin removed:", socket.id);
+    }
+    console.log(`❌ WebSocket disconnected: ${reason}`);
+  });
+
+  // ✅ Heartbeat ping
+  const heartbeat = setInterval(() => {
+    socket.emit("ping", { status: "alive" });
+  }, 30000);
+
+  socket.on("disconnect", () => clearInterval(heartbeat)); // No reason needed here
+});
 
   // 🛒 Handle order POST requests
   expressApp.post("/outlet/:slug", bodyParser.json(), async (req, res) => {
