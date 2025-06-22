@@ -63,6 +63,9 @@ app.prepare().then(() => {
     adminSockets.add(socket);
     console.log("✅ Admin registered:", socket.id);
 
+    console.log("🧮 Total admin sockets stored:", adminSockets.size);
+ adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
+
     socket.on("disconnect", () => {
       adminSockets.delete(socket);
       console.log("🗑️ Admin removed:", socket.id);
