@@ -42,6 +42,10 @@ app.prepare().then(() => {
   const expressApp = express();
   const server = http.createServer(expressApp);
 
+  server.on('upgrade', (req, socket, head) => {
+  console.log("⚙️  Raw upgrade request headers:", req.headers);
+});
+
   const io = new Server(server, {
     path: "/api/socket",
     cors: {
