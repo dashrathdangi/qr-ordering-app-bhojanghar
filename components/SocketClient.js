@@ -1,3 +1,4 @@
+// components/SocketClient.jsx
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -8,16 +9,14 @@ const socketUrl = "https://api.stonezon.com";
 
 export const getSocket = () => socket;
 
-export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
+export default function SocketClient({ onSocketEvent }) {
   console.log("✅ SocketClient mounted");
 
-  const onNewOrderRef = useRef(onNewOrder);
-  const onOrderStatusUpdateRef = useRef(onOrderStatusUpdate);
+  const onSocketEventRef = useRef(onSocketEvent);
 
   useEffect(() => {
-    onNewOrderRef.current = onNewOrder;
-    onOrderStatusUpdateRef.current = onOrderStatusUpdate;
-  }, [onNewOrder, onOrderStatusUpdate]);
+    onSocketEventRef.current = onSocketEvent;
+  }, [onSocketEvent]);
 
   useEffect(() => {
     if (!socket) {
@@ -46,27 +45,27 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       });
     }
 
-    const newOrderListener = (data) => {
-      console.log('📦 Received new order:', data);
-      onNewOrderRef.current?.(data);
+    const handleNewOrder = (data) => {
+      console.log('📡 newOrder received via socket:', data);
+      onSocketEventRef.current?.('newOrder', data);
     };
 
-    const statusUpdateListener = (data) => {
-      console.log('🔄 Received order status update:', data);
+    const handleStatusUpdate = (data) => {
+      console.log('📡 orderStatusUpdate received via socket:', data);
       const { orderId, newStatus } = data || {};
       if (orderId && newStatus) {
-        onOrderStatusUpdateRef.current?.(orderId, newStatus);
+        onSocketEventRef.current?.('orderStatusUpdate', { orderId, newStatus });
       } else {
         console.warn('⚠️ Invalid status update data:', data);
       }
     };
 
-    socket.on('newOrder', newOrderListener);
-    socket.on('orderStatusUpdate', statusUpdateListener);
+    socket.on('newOrder', handleNewOrder);
+    socket.on('orderStatusUpdate', handleStatusUpdate);
 
     return () => {
-      socket.off('newOrder', newOrderListener);
-      socket.off('orderStatusUpdate', statusUpdateListener);
+      socket.off('newOrder', handleNewOrder);
+      socket.off('orderStatusUpdate', handleStatusUpdate);
     };
   }, []);
 
