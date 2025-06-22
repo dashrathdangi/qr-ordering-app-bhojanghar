@@ -216,8 +216,11 @@ export default function AdminDashboard() {
   setOrders((prevSessions) => {
     // 1) Does this session_id already exist in state?
    const sessionIndex = prevSessions.findIndex(
-  (s) => s.session_id === parsedOrderObj.session_id && s.outlet_slug === parsedOrderObj.outlet_slug
+  (s) => s.session_id === parsedOrderObj.session_id
 );
+ console.log("🟢 Received via socket:", parsedOrderObj);
+ console.log("🔍 Existing sessions:", prevSessions.map(s => ({ id: s.session_id, outlet: s.outlet_slug })));
+ console.log("📦 Matching session index found:", sessionIndex);
     // If there is no existing session with this session_id, create a brand-new session object:
     if (sessionIndex === -1) {
       return [
