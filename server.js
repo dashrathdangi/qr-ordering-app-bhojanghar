@@ -69,6 +69,10 @@ app.prepare().then(() => {
     console.log("🐞 test-debug received from socket:", socket.id, data);
   });
 
+  socket.onAny((event, ...args) => {
+  console.log(`📥 onAny event: ${event}`, JSON.stringify(args));
+ });
+
   // ✅ Register adminConnected
   socket.on("adminConnected", () => {
     adminSockets.add(socket);
@@ -76,6 +80,7 @@ app.prepare().then(() => {
     console.log("🧮 Total admin sockets stored:", adminSockets.size);
     adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
   });
+ console.log("🧾 Registered events:", socket.eventNames());
 
   // ✅ Handle disconnect
   socket.on("disconnect", (reason) => {
