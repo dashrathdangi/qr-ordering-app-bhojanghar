@@ -60,6 +60,10 @@ app.prepare().then(() => {
  io.on("connection", (socket) => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
 
+  socket.onAny((event, ...args) => {
+  console.log(`📥 socket.onAny => Received event: "${event}"`, args);
+});
+
   // ✅ Register test-debug
   socket.on("test-debug", (data) => {
     console.log("🐞 test-debug received from socket:", socket.id, data);
