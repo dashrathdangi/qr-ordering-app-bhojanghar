@@ -68,6 +68,9 @@ app.prepare().then(() => {
       console.log("🗑️ Admin removed:", socket.id);
     });
   });
+   socket.on("test-debug", (data) => {
+    console.log("🐞 test-debug received from socket:", socket.id, data);
+  });
     const heartbeat = setInterval(() => {
       socket.emit("ping", { status: "alive" });
     }, 30000);
