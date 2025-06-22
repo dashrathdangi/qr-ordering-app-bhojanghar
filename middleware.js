@@ -6,19 +6,24 @@ const SECRET_KEY = new TextEncoder().encode(
 );
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/socket'], // ✅ include socket
+  matcher: ['/admin/:path*', '/api/socket'],
 };
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
+  if (pathname.startsWith('/api/socket')) {
+    console.log('🧪 Skipping middleware for /api/socket (WebSocket)');
+    return NextResponse.next();
+  }
+
+  // also allow static + login + websocket upgrades
   if (
     pathname === '/admin/login' ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon.ico') ||
-    pathname.startsWith('/notification.wav') ||
     pathname.startsWith('/images') ||
-    pathname.startsWith('/api/socket') // ✅ explicitly skip token check for sockets
+    pathname.startsWith('/notification.wav')
   ) {
     return NextResponse.next();
   }
@@ -29,14 +34,9 @@ export async function middleware(req) {
   }
 
   console.log('🔐 Middleware running for:', pathname);
+
   const tokenCookie = req.cookies.get('token');
   const outletCookie = req.cookies.get('selectedOutlet');
-
-  if (outletCookie) {
-    console.log(`🏪 selectedOutlet cookie: ${outletCookie.value}`);
-  } else {
-    console.log('⚠️ No selectedOutlet cookie found');
-  }
 
   if (!tokenCookie) {
     console.warn('🔒 No token cookie found — redirecting to /admin/login');
@@ -45,10 +45,10 @@ export async function middleware(req) {
 
   try {
     const { payload } = await jwtVerify(tokenCookie.value, SECRET_KEY);
-    console.log('✅ Token verified for:', payload?.username || payload?.sub || 'unknown');
+    console.log('✅ Token verified for:', payload?.username || 'unknown');
     return NextResponse.next();
   } catch (err) {
-    console.error('❌ Invalid or expired token —', err.message);
+    console.error('❌ Invalid token —', err.message);
     return NextResponse.redirect(new URL('/admin/login', req.url));
   }
 }
