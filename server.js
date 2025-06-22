@@ -60,21 +60,26 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log(`📡 WebSocket connected: ${socket.id}`);
 
-    socket.on("test-debug", (data) => {
-    console.log("🐞 test-debug received from socket:", socket.id, data);
-  });
-        socket.on("adminConnected", () => {
-    adminSockets.add(socket);
-    console.log("✅ Admin registered:", socket.id);
+    // Always listen for test-debug and disconnect events
+socket.on("test-debug", (data) => {
+  console.log("🐞 test-debug received from socket:", socket.id, data);
+});
 
-    console.log("🧮 Total admin sockets stored:", adminSockets.size);
- adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
+socket.on("disconnect", () => {
+  if (adminSockets.has(socket)) {
+    adminSockets.delete(socket);
+    console.log("🗑️ Admin removed:", socket.id);
+  }
+  console.log(`❌ WebSocket disconnected: ${socket.id}`);
+});
 
-    socket.on("disconnect", () => {
-      adminSockets.delete(socket);
-      console.log("🗑️ Admin removed:", socket.id);
-    });
-  });
+// Only handle admin registration
+socket.on("adminConnected", () => {
+  adminSockets.add(socket);
+  console.log("✅ Admin registered:", socket.id);
+  console.log("🧮 Total admin sockets stored:", adminSockets.size);
+  adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
+});
    
     const heartbeat = setInterval(() => {
       socket.emit("ping", { status: "alive" });
