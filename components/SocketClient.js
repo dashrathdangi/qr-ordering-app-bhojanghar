@@ -11,7 +11,6 @@ export const getSocket = () => socket;
 export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
   console.log("✅ SocketClient mounted");
 
-  // 🔁 Store latest function references
   const onNewOrderRef = useRef(onNewOrder);
   const onOrderStatusUpdateRef = useRef(onOrderStatusUpdate);
 
@@ -31,12 +30,11 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
         reconnectionDelayMax: 2000,
       });
 
-      // ✅ Expose socket to browser console
       window.socket = socket;
 
       socket.on('connect', () => {
-        console.log('✅ Connected to socket server:', socket.id);
-        socket.emit('adminConnected'); // ✅ Let server know it's an admin
+        console.log('🟢 Connected to socket server:', socket.id);
+        socket.emit('adminConnected');
       });
 
       socket.on('connect_error', (err) => {
@@ -44,47 +42,33 @@ export default function SocketClient({ onNewOrder, onOrderStatusUpdate }) {
       });
 
       socket.on('disconnect', () => {
-        console.log('❌ Disconnected from socket server');
+        console.log('🔴 Disconnected from socket server');
       });
     }
 
-    const handleNewOrder = (data) => {
+    const newOrderListener = (data) => {
       console.log('📦 Received new order:', data);
       onNewOrderRef.current?.(data);
     };
-const handleStatusUpdate = (data) => {
-  console.log('🔄 Order status updated:', JSON.stringify(data));
-  const { orderId, newStatus } = data || {};
-  if (orderId && newStatus) {
-    onOrderStatusUpdateRef.current?.(orderId, newStatus); // ✅ correct signature
-  } else {
-    console.warn('⚠️ Incomplete data for orderStatusUpdate:', data);
-  }
-};
-    // ✅ Attach listeners only once
-    const newOrderListener = (data) => {
-  console.log('📦 Received new order:', data); // ✅ socket received
-  if (onNewOrder) {
-    onNewOrder(data); // ✅ triggers AdminDashboard's processOrder
-  }
-};
 
-const statusUpdateListener = (data) => {
-  console.log('🔄 Received order status update:', data); // optional
-  if (onOrderStatusUpdate) {
-    onOrderStatusUpdate(data);
-  }
-};
+    const statusUpdateListener = (data) => {
+      console.log('🔄 Received order status update:', data);
+      const { orderId, newStatus } = data || {};
+      if (orderId && newStatus) {
+        onOrderStatusUpdateRef.current?.(orderId, newStatus);
+      } else {
+        console.warn('⚠️ Invalid status update data:', data);
+      }
+    };
 
-socket.on('newOrder', newOrderListener);
-socket.on('orderStatusUpdate', statusUpdateListener);
+    socket.on('newOrder', newOrderListener);
+    socket.on('orderStatusUpdate', statusUpdateListener);
 
-return () => {
-  socket.off('newOrder', newOrderListener);
-  socket.off('orderStatusUpdate', statusUpdateListener);
-};
-
-  }, [onNewOrder, onOrderStatusUpdate]);
+    return () => {
+      socket.off('newOrder', newOrderListener);
+      socket.off('orderStatusUpdate', statusUpdateListener);
+    };
+  }, []);
 
   return null;
 }
