@@ -63,16 +63,21 @@ app.prepare().then(() => {
   const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
  io.on("connection", (socket) => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
+  console.log("🔧 START setting up handlers for:", socket.id);
 
-  console.log("🧪 Setting up test-debug handler");
-
+  // 🧪 Add test-debug log
   socket.on("test-debug", (data) => {
-  console.log("🐞 test-debug received from socket:", socket.id, data);
-});
+    console.log("🐞 test-debug received from socket:", socket.id, data);
+  });
 
-socket.onAny((event, ...args) => {
-  console.log(`📥 socket.onAny => Received event: "${event}"`, args);
-});
+  // Log event list after setting up handlers
+  setTimeout(() => {
+    console.log("🧾 Registered events AFTER setup:", socket.eventNames());
+  }, 3000);
+
+  socket.onAny((event, ...args) => {
+    console.log(`📥 socket.onAny => Received event: "${event}"`, args);
+  });
 
  console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
