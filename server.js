@@ -72,6 +72,8 @@ app.prepare().then(() => {
     console.log("🐞 test-debug received from socket:", socket.id, data);
   });
 
+  socket.emit("debug-ack", { msg: "✅ Server received your test-debug handler setup." });
+
   // Log event list after setting up handlers
   setTimeout(() => {
     console.log("🧾 Registered events AFTER setup:", socket.eventNames());

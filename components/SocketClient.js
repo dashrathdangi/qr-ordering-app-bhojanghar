@@ -59,13 +59,19 @@ export default function SocketClient({ onSocketEvent }) {
         console.warn('⚠️ Invalid status update data:', data);
       }
     };
+   
+      const handleDebugAck = (data) => {
+      console.log("🟩 debug-ack from server:", data); // ✅ this is the new line
+    };
 
     socket.on('newOrder', handleNewOrder);
     socket.on('orderStatusUpdate', handleStatusUpdate);
+    socket.on('debug-ack', handleDebugAck);
 
     return () => {
       socket.off('newOrder', handleNewOrder);
       socket.off('orderStatusUpdate', handleStatusUpdate);
+      socket.off('debug-ack', handleDebugAck); 
     };
   }, []);
 
