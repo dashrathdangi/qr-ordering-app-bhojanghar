@@ -17,6 +17,7 @@ console.log("🟢 Starting server.js");
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("DATABASE_URL:", process.env.DATABASE_URL ? "✔️ Set" : "❌ Missing");
 console.log("PORT:", process.env.PORT);
+console.log("🧪 TEST LINE: This is the REAL server.js");
 
 const dev = process.env.NODE_ENV !== "production";
 
