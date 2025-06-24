@@ -64,6 +64,8 @@ app.prepare().then(() => {
  io.on("connection", (socket) => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
 
+  console.log("🧪 Setting up test-debug handler");
+
   socket.on("test-debug", (data) => {
   console.log("🐞 test-debug received from socket:", socket.id, data);
 });
