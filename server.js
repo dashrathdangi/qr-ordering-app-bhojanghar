@@ -74,10 +74,6 @@ socket.onAny((event, ...args) => {
 
  console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
-  socket.onAny((event, ...args) => {
-  console.log(`📥 onAny event: ${event}`, JSON.stringify(args));
- });
-
   // ✅ Register adminConnected
   socket.on("adminConnected", () => {
     adminSockets.add(socket);
