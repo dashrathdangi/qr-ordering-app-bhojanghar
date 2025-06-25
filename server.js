@@ -68,15 +68,15 @@ app.prepare().then(() => {
   console.log("🔧 START setting up handlers for:", socket.id);
 
   // 🧪 Add test-debug log
- socket.on("test-debug", (data) => {
+ // 🧪 Add test-debug log
+socket.on("test-debug", (data) => {
   console.log("🐞 test-debug received from socket:", socket.id, data);
   socket.emit("debug-ack", {
-    msg: "✅ Server received your test-debug handler setup.",
+    msg: "✅ Server received your test-debug",
     received: data,
     socketId: socket.id,
   });
 });
-  socket.emit("debug-ack", { msg: "✅ Server received your test-debug handler setup." });
 
   // Log event list after setting up handlers
   setTimeout(() => {
