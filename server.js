@@ -36,10 +36,15 @@ const allowedOrigin = (origin, callback) => {
 }
 };
 
-const app = next({ dev });
+const app = next({
+  dev: false,
+  dir: ".", // this ensures correct path to .next
+});
+
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
+  console.log("✅ Next.js app prepared from:", app._dir);
   const expressApp = express();
   const server = http.createServer(expressApp);
 
