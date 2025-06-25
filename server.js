@@ -11,6 +11,7 @@ import http from "http";
 import bodyParser from "body-parser";
 import { query } from "./lib/db/index.js";
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
 
 // ✅ ADD DEBUG LOGS HERE
 console.log("🟢 Starting server.js");
@@ -38,7 +39,7 @@ const allowedOrigin = (origin, callback) => {
 
 const app = next({
   dev: false,
-  dir: ".", // this ensures correct path to .next
+  dir: path.resolve("./"), // absolute path to current project root
 });
 
 const handle = app.getRequestHandler();
