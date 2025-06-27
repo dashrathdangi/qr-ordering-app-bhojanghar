@@ -155,6 +155,8 @@ socket.on("test-debug", (data) => {
 adminSockets.forEach(s => console.log("➡️", s.id));
 
       console.log("📢 Emitting to total admins:", adminSockets.size);
+      console.log("📢 Preparing to emit real order via socket:", orderData);
+console.log("📡 Total adminSockets:", adminSockets.size);
  adminSockets.forEach((adminSocket) => {
   console.log("➡️ Emitting to admin:", adminSocket.id);
   adminSocket.emit("newOrder", {
