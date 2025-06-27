@@ -27,12 +27,11 @@ export default function SocketClient({ onSocketEvent }) {
         timeout: 10000,
         reconnectionDelayMax: 2000,
       });
-     
-      if (socket.current) {
-  socket.current.onAny((event, payload) => {
-    console.log(`📡 Received socket event: ${event}`, payload);
-  });
-}
+
+      // ✅ Add debug event listener properly
+      socket.onAny((event, payload) => {
+        console.log(`📡 Received socket event: ${event}`, payload);
+      });
 
       window.socket = socket;
 
@@ -50,7 +49,7 @@ export default function SocketClient({ onSocketEvent }) {
       setTimeout(() => {
         socket.emit('adminConnected');
         console.log("📡 Re-emitted adminConnected after delay");
-      }, 500); // Delay helps in case connection is not fully stable
+      }, 500);
     };
 
     const handleNewOrder = (data) => {
