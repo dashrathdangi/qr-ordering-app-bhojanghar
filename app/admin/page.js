@@ -189,6 +189,8 @@ if (knownOrderIds.current.has(orderId)) {
   return;
 } else {
   console.log("🆕 New Order Detected with ID:", orderId);
+  knownOrderIds.current.add(orderId);
+console.log("✅ Orders updated with new order:", orderId);
 }
 
     let cart = [];
