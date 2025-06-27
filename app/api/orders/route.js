@@ -346,11 +346,16 @@ VALUES
     };
    
     // ✅ EMIT updated grouped orders with order_number
-    if (global.io) {
-      try {
-        const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
-        console.log("📡 Emitting newOrder with payload:", updatedGroupedOrders);
-        global.io.emit("newOrder", updatedGroupedOrders);
+    if (global.adminSockets) {
+  try {
+    const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
+    console.log("📡 Emitting newOrder to admins:", updatedGroupedOrders);
+
+    for (const socket of global.adminSockets) {
+      if (socket.connected) {
+        socket.emit("newOrder", updatedGroupedOrders);
+      }
+    }
       } catch (err) {
         console.error("❌ GET Orders Error:", err.stack || err.message || err);
 
