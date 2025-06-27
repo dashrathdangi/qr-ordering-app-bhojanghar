@@ -177,6 +177,10 @@ export default function AdminDashboard() {
 
     const orderId = newOrderRaw.id ?? newOrderRaw.orders?.[0]?.id;
     if (!orderId) return;
+    if (knownOrderIds.current.has(orderId)) {
+  console.log("🔁 Duplicate order detected, skipping ID:", orderId);
+  return;
+}
 
     let cart = [];
     try {
@@ -234,7 +238,10 @@ export default function AdminDashboard() {
       const updatedSessions = [...prevSessions];
       const existingSession = { ...updatedSessions[sessionIndex] };
       const alreadyExists = existingSession.orders.some((o) => o.id === parsedOrderObj.id);
-      if (alreadyExists) return prevSessions;
+      if (alreadyExists) {
+  console.log("⚠️ Duplicate order ID, skipping update for:", parsedOrderObj.id);
+  return [...prevSessions]; // return new reference to trigger re-render
+}
 
       const newOrdersArray = [...existingSession.orders, parsedOrderObj];
       const allItems = newOrdersArray.flatMap((o) => o.cart || []);
@@ -275,7 +282,7 @@ export default function AdminDashboard() {
       updatedSessions[sessionIndex] = updatedSession;
       return updatedSessions;
     });
-
+   console.log("✅ Orders updated with new order:", parsedOrderObj.id);
     knownOrderIds.current.add(parsedOrderObj.id);
     playSound();
   });
