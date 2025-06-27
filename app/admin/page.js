@@ -176,10 +176,16 @@ export default function AdminDashboard() {
     if (!newOrderRaw) return;
 
     const orderId = newOrderRaw.id ?? newOrderRaw.orders?.[0]?.id;
-    if (!orderId) return;
-    if (knownOrderIds.current.has(orderId)) {
+    if (!orderId) {
+  console.log("⚠️ No orderId found in incoming order:", newOrderRaw);
+  return;
+}
+
+if (knownOrderIds.current.has(orderId)) {
   console.log("🔁 Duplicate order detected, skipping ID:", orderId);
   return;
+} else {
+  console.log("🆕 New Order Detected with ID:", orderId);
 }
 
     let cart = [];
@@ -208,7 +214,7 @@ export default function AdminDashboard() {
       created_at: newOrderRaw.created_at || new Date().toISOString(),
       order_number: newOrderRaw.order_number ?? 'N/A',
     };
-
+    console.log("📦 Handling session for order ID:", parsedOrderObj.id, "Session ID:", parsedOrderObj.session_id);
     setOrders((prevSessions) => {
       const sessionIndex = prevSessions.findIndex(
         (s) => s.session_id === parsedOrderObj.session_id
