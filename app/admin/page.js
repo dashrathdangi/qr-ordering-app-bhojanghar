@@ -170,145 +170,116 @@ export default function AdminDashboard() {
 
   // Process new order received from socket and update UI
   const processOrder = useCallback((order) => {
-  // Debug log to inspect the incoming payload:
-  console.log('📥 processOrder triggered with:', order);
+  const ordersArray = Array.isArray(order) ? order : [order];
 
-  // If the payload is an array, just pick the first element.
-  const newOrder = Array.isArray(order) ? order[0] : order;
-  if (!newOrder) return;
+  ordersArray.forEach((newOrderRaw) => {
+    if (!newOrderRaw) return;
 
-  // Determine a unique orderId
-  const orderId = newOrder.id ?? newOrder.orders?.[0]?.id;
-  if (!orderId) return;
+    const orderId = newOrderRaw.id ?? newOrderRaw.orders?.[0]?.id;
+    if (!orderId) return;
 
-  // Normalize cart into an array of items
-  let cart = [];
-  try {
-    if (typeof newOrder.cart === 'string') {
-      cart = JSON.parse(newOrder.cart);
-    } else if (Array.isArray(newOrder.cart)) {
-      cart = newOrder.cart;
-    } else if (Array.isArray(newOrder.orders) && newOrder.orders.length > 0) {
-      const firstChildOrder = newOrder.orders[0];
-      cart = Array.isArray(firstChildOrder.cart) ? firstChildOrder.cart : [];
-    }
-  } catch {
-    cart = [];
-  }
-
-  // Build a “flat” order object that we will merge into state
-  const parsedOrderObj = {
-    ...newOrder,
-    cart,
-    customer_name: newOrder.customer_name || 'Guest',
-    table_number: newOrder.is_package ? 'Takeaway' : newOrder.table_number || 'N/A',
-    total_amount:
-      typeof newOrder.total_amount === 'number'
-        ? newOrder.total_amount
-        : cart.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 0), 0),
-    created_at: newOrder.created_at || new Date().toISOString(),
-    order_number: newOrder.order_number ?? 'N/A',
-  };
- console.log("📦 Incoming order outlet_slug:", parsedOrderObj.outlet_slug);
- console.log("📦 Current selectedOutlet:", selectedOutlet);
-
-  // Now update `orders` state:
-  setOrders((prevSessions) => {
-    // 1) Does this session_id already exist in state?
-   const sessionIndex = prevSessions.findIndex(
-  (s) => s.session_id === parsedOrderObj.session_id
-);
- console.log("🟢 Received via socket:", parsedOrderObj);
- console.log("🔍 Existing sessions:", prevSessions.map(s => ({ id: s.session_id, outlet: s.outlet_slug })));
- console.log("📦 Matching session index found:", sessionIndex);
-    // If there is no existing session with this session_id, create a brand-new session object:
-    if (sessionIndex === -1) {
-      return [
-        {
-          session_id: parsedOrderObj.session_id,
-          customer_name: parsedOrderObj.customer_name,
-          table_number: parsedOrderObj.table_number,
-          outlet_slug: parsedOrderObj.outlet_slug,
-          combined_total: parsedOrderObj.total_amount,
-          total_quantity: cart.reduce((sum, i) => sum + (i.quantity || 0), 0),
-          has_takeaway: parsedOrderObj.is_package === true,
-          has_dinein: parsedOrderObj.is_package !== true,
-          orders: [parsedOrderObj],
-          combined_cart: [...cart],
-          latest_order_time: parsedOrderObj.created_at,
-          latest_order_id: parsedOrderObj.id,
-          status: parsedOrderObj.status,
-        },
-        ...prevSessions,
-      ];
+    let cart = [];
+    try {
+      if (typeof newOrderRaw.cart === 'string') {
+        cart = JSON.parse(newOrderRaw.cart);
+      } else if (Array.isArray(newOrderRaw.cart)) {
+        cart = newOrderRaw.cart;
+      } else if (Array.isArray(newOrderRaw.orders) && newOrderRaw.orders.length > 0) {
+        const firstChildOrder = newOrderRaw.orders[0];
+        cart = Array.isArray(firstChildOrder.cart) ? firstChildOrder.cart : [];
+      }
+    } catch {
+      cart = [];
     }
 
-    // 2) Otherwise, we’re *appending* to an existing session object:
-    const updatedSessions = [...prevSessions];
-    const existingSession = { ...updatedSessions[sessionIndex] };
-
-    // 2a) If the same order ID is already in that session, skip (duplicate)
-    const alreadyExists = existingSession.orders.some((o) => o.id === parsedOrderObj.id);
-    if (alreadyExists) {
-      console.log('⏩ Duplicate order detected, skipping update.');
-      return prevSessions;
-    }
-
-    // 2b) Compute merged cart and totals
-    const newOrdersArray = [...existingSession.orders, parsedOrderObj];
-    const allItems = newOrdersArray.flatMap((o) => o.cart || []);
-    // mergeCartItems should coalesce items by name + is_package
-    const mergedCart = mergeCartItems(allItems);
-
-    // 2c) Determine if this incoming order is strictly “newer” than the session’s latest_order_time
-    const incomingTime = new Date(parsedOrderObj.created_at).getTime();
-    const existingLatestTime = new Date(existingSession.latest_order_time).getTime();
-    const isIncomingNewer = incomingTime > existingLatestTime;
-
-    // 2d) Detect a “customer_name conflict”: same session_id but different customer_name
-    const customerNameConflict =
-      existingSession.customer_name !== parsedOrderObj.customer_name;
-
-    // 2e) Build the updated session object
-    const updatedSession = {
-      ...existingSession,
-      orders: newOrdersArray,
-      combined_cart: mergedCart,
-      total_quantity: mergedCart.reduce((sum, i) => sum + (i.quantity || 0), 0),
-      combined_total: mergedCart.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 0), 0),
-      has_takeaway: existingSession.has_takeaway || parsedOrderObj.is_package === true,
-      has_dinein: existingSession.has_dinein || parsedOrderObj.is_package !== true,
-      latest_order_time: isIncomingNewer
-        ? parsedOrderObj.created_at
-        : existingSession.latest_order_time,
-      latest_order_id: isIncomingNewer
-        ? parsedOrderObj.id
-        : existingSession.latest_order_id,
-      status: isIncomingNewer ? parsedOrderObj.status : existingSession.status,
-
-      // 2f) If the incoming order’s customer_name differs AND it’s newer, update it:
-      customer_name:
-        customerNameConflict && isIncomingNewer
-          ? parsedOrderObj.customer_name
-          : existingSession.customer_name,
-
-      // 2g) Likewise for table_number (only if indeed this new order is newer)
-      table_number:
-        customerNameConflict && isIncomingNewer
-          ? parsedOrderObj.table_number
-          : existingSession.table_number,
+    const parsedOrderObj = {
+      ...newOrderRaw,
+      cart,
+      customer_name: newOrderRaw.customer_name || 'Guest',
+      table_number: newOrderRaw.is_package ? 'Takeaway' : newOrderRaw.table_number || 'N/A',
+      total_amount:
+        typeof newOrderRaw.total_amount === 'number'
+          ? newOrderRaw.total_amount
+          : cart.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 0), 0),
+      created_at: newOrderRaw.created_at || new Date().toISOString(),
+      order_number: newOrderRaw.order_number ?? 'N/A',
     };
 
-    // 3) Replace that one session in the array
-    updatedSessions[sessionIndex] = updatedSession;
-    console.log("🧠 All sessions in state now:", updatedSessions.map(s => s.outlet_slug));
-    return updatedSessions;
-  });
+    setOrders((prevSessions) => {
+      const sessionIndex = prevSessions.findIndex(
+        (s) => s.session_id === parsedOrderObj.session_id
+      );
 
-  // Finally, allow sound for each NEW order
-  knownOrderIds.current.add(parsedOrderObj.id);
-  playSound();
-}, [playSound, selectedOutlet]);  // Added selectedOutlet to dependencies
+      if (sessionIndex === -1) {
+        return [
+          {
+            session_id: parsedOrderObj.session_id,
+            customer_name: parsedOrderObj.customer_name,
+            table_number: parsedOrderObj.table_number,
+            outlet_slug: parsedOrderObj.outlet_slug,
+            combined_total: parsedOrderObj.total_amount,
+            total_quantity: cart.reduce((sum, i) => sum + (i.quantity || 0), 0),
+            has_takeaway: parsedOrderObj.is_package === true,
+            has_dinein: parsedOrderObj.is_package !== true,
+            orders: [parsedOrderObj],
+            combined_cart: [...cart],
+            latest_order_time: parsedOrderObj.created_at,
+            latest_order_id: parsedOrderObj.id,
+            status: parsedOrderObj.status,
+          },
+          ...prevSessions,
+        ];
+      }
+
+      const updatedSessions = [...prevSessions];
+      const existingSession = { ...updatedSessions[sessionIndex] };
+      const alreadyExists = existingSession.orders.some((o) => o.id === parsedOrderObj.id);
+      if (alreadyExists) return prevSessions;
+
+      const newOrdersArray = [...existingSession.orders, parsedOrderObj];
+      const allItems = newOrdersArray.flatMap((o) => o.cart || []);
+      const mergedCart = mergeCartItems(allItems);
+
+      const incomingTime = new Date(parsedOrderObj.created_at).getTime();
+      const existingLatestTime = new Date(existingSession.latest_order_time).getTime();
+      const isIncomingNewer = incomingTime > existingLatestTime;
+
+      const customerNameConflict =
+        existingSession.customer_name !== parsedOrderObj.customer_name;
+
+      const updatedSession = {
+        ...existingSession,
+        orders: newOrdersArray,
+        combined_cart: mergedCart,
+        total_quantity: mergedCart.reduce((sum, i) => sum + (i.quantity || 0), 0),
+        combined_total: mergedCart.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 0), 0),
+        has_takeaway: existingSession.has_takeaway || parsedOrderObj.is_package === true,
+        has_dinein: existingSession.has_dinein || parsedOrderObj.is_package !== true,
+        latest_order_time: isIncomingNewer
+          ? parsedOrderObj.created_at
+          : existingSession.latest_order_time,
+        latest_order_id: isIncomingNewer
+          ? parsedOrderObj.id
+          : existingSession.latest_order_id,
+        status: isIncomingNewer ? parsedOrderObj.status : existingSession.status,
+        customer_name:
+          customerNameConflict && isIncomingNewer
+            ? parsedOrderObj.customer_name
+            : existingSession.customer_name,
+        table_number:
+          customerNameConflict && isIncomingNewer
+            ? parsedOrderObj.table_number
+            : existingSession.table_number,
+      };
+
+      updatedSessions[sessionIndex] = updatedSession;
+      return updatedSessions;
+    });
+
+    knownOrderIds.current.add(parsedOrderObj.id);
+    playSound();
+  });
+}, [playSound]);
 
 console.log("Rendering Admin page, processOrder and updateStatus refs:", processOrder, updateStatus);
 console.log('🔁 Current orders count:', orders.length);
