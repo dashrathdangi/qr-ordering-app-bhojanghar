@@ -175,7 +175,10 @@ export default function AdminDashboard() {
   ordersArray.forEach((newOrderRaw) => {
     if (!newOrderRaw) return;
 
-    const orderId = newOrderRaw.id ?? newOrderRaw.orders?.[0]?.id;
+    const orderId =
+  newOrderRaw.id ??
+  (Array.isArray(newOrderRaw.orders) && newOrderRaw.orders[0]?.id) ??
+  null;
     if (!orderId) {
   console.log("⚠️ No orderId found in incoming order:", newOrderRaw);
   return;

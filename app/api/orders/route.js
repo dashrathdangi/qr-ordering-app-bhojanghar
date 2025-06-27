@@ -349,6 +349,7 @@ VALUES
     if (global.io) {
       try {
         const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
+        console.log("📡 Emitting newOrder with payload:", updatedGroupedOrders);
         global.io.emit("newOrder", updatedGroupedOrders);
       } catch (err) {
         console.error("❌ GET Orders Error:", err.stack || err.message || err);
