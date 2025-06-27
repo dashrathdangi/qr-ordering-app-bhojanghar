@@ -287,6 +287,7 @@ console.log('🔁 Current orders count:', orders.length);
   // Handle events from WebSocket client
  const handleSocketEvent = useCallback(
   (eventName, payload) => {
+    console.log("📥 handleSocketEvent:", eventName, payload);
     if (eventName === 'newOrder') {
       processOrder(payload);  // ✅ used here
     } else if (eventName === 'orderStatusUpdate') {

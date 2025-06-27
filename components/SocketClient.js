@@ -27,6 +27,10 @@ export default function SocketClient({ onSocketEvent }) {
         timeout: 10000,
         reconnectionDelayMax: 2000,
       });
+     
+      socket.current.onAny((event, payload) => {
+  console.log(`📡 Received socket event: ${event}`, payload);
+});
 
       window.socket = socket;
 
