@@ -1,4 +1,3 @@
-// components/SocketClient.jsx
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -31,11 +30,6 @@ export default function SocketClient({ onSocketEvent }) {
 
       window.socket = socket;
 
-      socket.on('connect', () => {
-        console.log('🟢 Connected to socket server:', socket.id);
-        socket.emit('adminConnected');
-      });
-
       socket.on('connect_error', (err) => {
         console.error('❌ Socket connection error:', err.message);
       });
@@ -44,6 +38,14 @@ export default function SocketClient({ onSocketEvent }) {
         console.log('🔴 Disconnected from socket server');
       });
     }
+
+    const connectHandler = () => {
+      console.log('🟢 Connected to socket server:', socket.id);
+      setTimeout(() => {
+        socket.emit('adminConnected');
+        console.log("📡 Re-emitted adminConnected after delay");
+      }, 500); // Delay helps in case connection is not fully stable
+    };
 
     const handleNewOrder = (data) => {
       console.log('📡 newOrder received via socket:', data);
@@ -59,19 +61,22 @@ export default function SocketClient({ onSocketEvent }) {
         console.warn('⚠️ Invalid status update data:', data);
       }
     };
-   
-      const handleDebugAck = (data) => {
-      console.log("🟩 debug-ack from server:", data); // ✅ this is the new line
+
+    const handleDebugAck = (data) => {
+      console.log("🟩 debug-ack from server:", data);
     };
 
+    // ✅ Event bindings
+    socket.on('connect', connectHandler);
     socket.on('newOrder', handleNewOrder);
     socket.on('orderStatusUpdate', handleStatusUpdate);
     socket.on('debug-ack', handleDebugAck);
 
     return () => {
+      socket.off('connect', connectHandler);
       socket.off('newOrder', handleNewOrder);
       socket.off('orderStatusUpdate', handleStatusUpdate);
-      socket.off('debug-ack', handleDebugAck); 
+      socket.off('debug-ack', handleDebugAck);
     };
   }, []);
 
