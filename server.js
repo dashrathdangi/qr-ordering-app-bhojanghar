@@ -98,6 +98,15 @@ socket.on("test-debug", (data) => {
 
   // ✅ Register adminConnected
   socket.on("adminConnected", () => {
+  const token = socket.handshake.headers?.cookie
+    ?.split(";")
+    ?.find(c => c.trim().startsWith("token="))
+    ?.split("=")[1];
+
+  if (!token) {
+    console.warn("⛔ No token provided in cookie during adminConnected");
+    return;
+  }
     adminSockets.add(socket);
     console.log("✅ Admin registered:", socket.id);
     console.log("🧮 Total admin sockets stored:", adminSockets.size);
