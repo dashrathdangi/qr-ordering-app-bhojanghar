@@ -75,57 +75,45 @@ app.prepare().then(() => {
   console.log(`📡 WebSocket connected: ${socket.id}`);
   console.log("🔧 START setting up handlers for:", socket.id);
 
-  // 🧪 Add test-debug log
- // 🧪 Add test-debug log
-socket.on("test-debug", (data) => {
-  console.log("🐞 test-debug received from socket:", socket.id, data);
-  socket.emit("debug-ack", {
-    msg: "✅ Server received your test-debug",
-    received: data,
-    socketId: socket.id,
-  });
-});
+  const rawCookies = socket.handshake.headers?.cookie || 'no cookie';
+  console.log("🍪 Raw cookie string:", rawCookies);
 
-  // Log event list after setting up handlers
-  setTimeout(() => {
-    console.log("🧾 Registered events AFTER setup:", socket.eventNames());
-  }, 3000);
+  socket.on("test-debug", (data) => {
+    console.log("🐞 test-debug received from socket:", socket.id, data);
+    socket.emit("debug-ack", {
+      msg: "✅ Server received your test-debug",
+      received: data,
+      socketId: socket.id,
+    });
+  });
 
   socket.onAny((event, ...args) => {
     console.log(`📥 socket.onAny => Received event: "${event}"`, args);
   });
 
- console.log("📍 Headers on socket connection:", socket.handshake.headers);
-
- const rawCookies = socket.handshake.headers?.cookie || 'no cookie';
-  console.log("🍪 Raw cookie string:", rawCookies);
-});
-
-  // ✅ Register adminConnected
+  // ✅ MOVE THIS BLOCK *INSIDE* io.on("connection")
   socket.on("adminConnected", () => {
-  const cookieHeader = socket.handshake.headers?.cookie || "";
-  const tokenMatch = cookieHeader.match(/token=([^;]+)/);
-  const token = tokenMatch ? tokenMatch[1] : null;
+    const cookieHeader = socket.handshake.headers?.cookie || "";
+    const tokenMatch = cookieHeader.match(/token=([^;]+)/);
+    const token = tokenMatch ? tokenMatch[1] : null;
 
-  if (!token) {
-    console.warn("⛔ No token cookie sent by client");
-    return;
-  }
+    if (!token) {
+      console.warn("⛔ No token cookie sent by client");
+      return;
+    }
 
-  const decoded = verifyToken(token);
-  if (!decoded || !decoded.adminId) {
-    console.warn("⛔ Invalid or expired token:", token);
-    return;
-  }
+    const decoded = verifyToken(token);
+    if (!decoded || !decoded.adminId) {
+      console.warn("⛔ Invalid or expired token:", token);
+      return;
+    }
 
-  adminSockets.add(socket);
-  console.log("✅ Authenticated Admin added:", socket.id, "Admin ID:", decoded.adminId);
-  console.log("🧮 Total authenticated admin sockets:", adminSockets.size);
-});
+    adminSockets.add(socket);
+    console.log("✅ Authenticated Admin added:", socket.id, "Admin ID:", decoded.adminId);
+    console.log("🧮 Total authenticated admin sockets:", adminSockets.size);
+  });
 
- console.log("🧾 Registered events:", socket.eventNames());
-
-  // ✅ Handle disconnect
+  // ✅ Disconnect cleanup
   socket.on("disconnect", (reason) => {
     if (adminSockets.has(socket)) {
       adminSockets.delete(socket);
@@ -134,7 +122,7 @@ socket.on("test-debug", (data) => {
     console.log(`❌ WebSocket disconnected: ${reason}`);
   });
 
-  // ✅ Ping every 30s
+  // ✅ Ping heartbeat
   const heartbeat = setInterval(() => {
     socket.emit("ping", { status: "alive" });
   }, 30000);
