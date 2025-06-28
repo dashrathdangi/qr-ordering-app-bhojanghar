@@ -12,6 +12,7 @@ import bodyParser from "body-parser";
 import { query } from "./lib/db/index.js";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
+import { verifyToken } from './lib/auth.js';
 
 // ✅ ADD DEBUG LOGS HERE
 console.log("🟢 Starting server.js");
@@ -98,20 +99,26 @@ socket.on("test-debug", (data) => {
 
   // ✅ Register adminConnected
   socket.on("adminConnected", () => {
-  const token = socket.handshake.headers?.cookie
-    ?.split(";")
-    ?.find(c => c.trim().startsWith("token="))
-    ?.split("=")[1];
+  const cookieHeader = socket.handshake.headers?.cookie || "";
+  const tokenMatch = cookieHeader.match(/token=([^;]+)/);
+  const token = tokenMatch ? tokenMatch[1] : null;
 
   if (!token) {
-    console.warn("⛔ No token provided in cookie during adminConnected");
+    console.warn("⛔ No token cookie sent by client");
     return;
   }
-    adminSockets.add(socket);
-    console.log("✅ Admin registered:", socket.id);
-    console.log("🧮 Total admin sockets stored:", adminSockets.size);
-    adminSockets.forEach(s => console.log("🆔 Stored socket:", s.id));
-  });
+
+  const decoded = verifyToken(token);
+  if (!decoded || !decoded.adminId) {
+    console.warn("⛔ Invalid or expired token:", token);
+    return;
+  }
+
+  adminSockets.add(socket);
+  console.log("✅ Authenticated Admin added:", socket.id, "Admin ID:", decoded.adminId);
+  console.log("🧮 Total authenticated admin sockets:", adminSockets.size);
+});
+
  console.log("🧾 Registered events:", socket.eventNames());
 
   // ✅ Handle disconnect
