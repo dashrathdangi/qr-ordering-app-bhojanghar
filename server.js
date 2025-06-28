@@ -97,6 +97,10 @@ socket.on("test-debug", (data) => {
 
  console.log("📍 Headers on socket connection:", socket.handshake.headers);
 
+ const rawCookies = socket.handshake.headers?.cookie || 'no cookie';
+  console.log("🍪 Raw cookie string:", rawCookies);
+});
+
   // ✅ Register adminConnected
   socket.on("adminConnected", () => {
   const cookieHeader = socket.handshake.headers?.cookie || "";
