@@ -350,6 +350,10 @@ VALUES
   try {
     const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
     console.log("📡 Emitting newOrder to admins:", updatedGroupedOrders);
+    console.log("📦 Sending order update to", global.adminSockets?.size || 0, "admin sockets");
+    for (const socket of global.adminSockets) {
+      console.log("➡️ Sending to:", socket.id, "connected:", socket.connected);
+    }
 
     for (const socket of global.adminSockets) {
       if (socket.connected) {

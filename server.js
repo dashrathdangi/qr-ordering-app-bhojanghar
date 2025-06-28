@@ -67,7 +67,8 @@ app.prepare().then(() => {
 
   global.io = io;
 
-  const adminSockets = new Set(); // ✅ Place this outside `io.on(...)` so it's global
+  const adminSockets = new Set();
+  global.adminSockets = adminSockets; 
  io.on("connection", (socket) => {
   console.log("🔧 Inside io.on(connection) for socket:", socket.id);
   console.log(`📡 WebSocket connected: ${socket.id}`);
