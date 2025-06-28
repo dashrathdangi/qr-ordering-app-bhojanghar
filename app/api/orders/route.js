@@ -349,28 +349,32 @@ VALUES
     if (global.adminSockets) {
   try {
     const updatedGroupedOrders = await groupOrdersBySession({ outletSlug });
-    console.log("📡 Emitting newOrder to admins:", updatedGroupedOrders);
-    console.log("📦 Sending order update to", global.adminSockets?.size || 0, "admin sockets");
-    for (const socket of global.adminSockets) {
-      console.log("➡️ Sending to:", socket.id, "connected:", socket.connected);
+
+    console.log("📦 Preparing to emit new order...");
+    console.log("🧮 Admin Sockets:", global.adminSockets?.size || 0);
+
+    for (const socket of global.adminSockets || []) {
+      console.log("➡️ Emitting to socket:", socket.id, "connected:", socket.connected);
     }
 
-    for (const socket of global.adminSockets) {
+    for (const socket of global.adminSockets || []) {
       if (socket.connected) {
         socket.emit("newOrder", updatedGroupedOrders);
+      } else {
+        console.warn("⚠️ Admin socket not connected:", socket.id);
       }
     }
-      } catch (err) {
-        console.error("❌ GET Orders Error:", err.stack || err.message || err);
 
-        const status = err.message === 'Subscription expired' ? 403 : 500;
+  } catch (err) {
+    console.error("❌ Error during newOrder emit:", err.stack || err.message || err);
 
-        return new Response(JSON.stringify({ message: err.message || "Internal Server Error" }), {
-          status,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
+    const status = err.message === 'Subscription expired' ? 403 : 500;
+    return new Response(JSON.stringify({ message: err.message || "Internal Server Error" }), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
 
     return new Response(
       JSON.stringify({ message: "Order saved successfully!", order: orderToEmit }),
