@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'path'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -31,6 +31,33 @@ const nextConfig = {
 
     return config;
   },
-};
 
-export default nextConfig;
+  // ✅ Add custom headers for CORS & cookies
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://api.stonezon.com',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+          },
+        ],
+      },
+    ]
+  },
+}
+
+export default nextConfig
