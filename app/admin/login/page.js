@@ -16,28 +16,32 @@ export default function AdminLoginPage() {
     setError('');
     setLoading(true);
 
+    const formData = new FormData(e.target);
+    const username = formData.get("username")?.trim();
+    const password = formData.get("password");
+
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include', // ✅ Include cookies for JWT auth
-        body: JSON.stringify({
-          username: username.trim(),
-          password: password,
-        }),
+        credentials: "include", // ✅ Important for saving the cookie
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        router.push('/admin');
+        console.log("✅ Login success");
+        router.push("/admin"); // Or use window.location.href = '/admin';
       } else {
-        const data = await res.json();
-        setError(data.error || 'Login failed');
+        console.error("❌ Login failed:", data.error);
+        setError(data.error || "Login failed");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Network error. Please try again.');
+      console.error("❌ Error during login:", err);
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,6 +63,7 @@ export default function AdminLoginPage() {
             </label>
             <input
               id="username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -74,6 +79,7 @@ export default function AdminLoginPage() {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
