@@ -41,15 +41,30 @@ export async function POST(req) {
       timestamp: Date.now(),
     });
 
-    const response = NextResponse.json({ message: 'Login successful' });
+    const maxAgeSeconds = 7 * 24 * 60 * 60; // 7 days
 
-    response.cookies.set('token', token, {
-      httpOnly: true,
-      path: '/',
-      secure: true,
-      sameSite: 'none', // ⚠️ VERY IMPORTANT for cross-origin login
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-    });
+    // ✅ Manual cookie string
+    const cookie = [
+      `token=${token}`,
+      'Path=/',
+      'HttpOnly',
+      `Max-Age=${maxAgeSeconds}`,
+      'SameSite=None',
+      'Secure',
+    ]
+      .filter(Boolean)
+      .join('; ');
+
+    const response = new Response(
+      JSON.stringify({ message: 'Login successful' }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Set-Cookie': cookie,
+        },
+      }
+    );
 
     console.log('✅ Token issued and cookie set for user:', username);
     return response;
