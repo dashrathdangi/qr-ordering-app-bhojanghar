@@ -33,6 +33,7 @@ export async function middleware(req) {
     console.warn('🔒 No token cookie — redirecting to login');
     return NextResponse.redirect(new URL('/admin/login', req.url));
   }
+ console.log("🔐 Admin route cookie header:", req.headers.get('cookie'));
 
   try {
     const { payload } = await jwtVerify(tokenCookie.value, SECRET_KEY);
