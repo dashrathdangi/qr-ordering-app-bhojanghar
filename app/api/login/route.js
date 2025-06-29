@@ -51,6 +51,7 @@ export async function POST(req) {
       `Max-Age=${maxAgeSeconds}`,
       'SameSite=None',
       'Secure',
+      'Domain=.stonezon.com',
     ]
       .filter(Boolean)
       .join('; ');
