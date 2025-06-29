@@ -65,7 +65,7 @@ export async function POST(req) {
         },
       }
     );
-
+   console.log("🍪 Set-Cookie string:", cookie);
     console.log('✅ Token issued and cookie set for user:', username);
     return response;
   } catch (err) {
